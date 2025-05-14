@@ -22,7 +22,7 @@ export default function ShareableCard({ latitude, longitude, speed, unit }: Shar
   };
 
   const getShareText = () => {
-    return `I'm spinning at ${formatNumber(speed)} ${getUnitLabel()} just by standing on Earth! Check your own rotation speed at ${window.location.origin}`;
+    return `I'm spinning at ${formatNumber(speed)} ${getUnitLabel()}. Check your own Earth rotation speed at ${window.location.origin}`;
   };
 
   const handleShare = async () => {

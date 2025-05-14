@@ -86,9 +86,7 @@ export default function RotationSpeedDisplay({
           </Button>
         </div>
         
-        <p className="text-lg max-w-md mx-auto opacity-80 font-light">
-          That's how fast you're moving through space just by standing on Earth!
-        </p>
+
       </div>
     </div>
   );
