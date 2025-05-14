@@ -46,8 +46,11 @@ export default function Home() {
     try {
       setIsSavingLocation(true);
       
-      await apiRequest("/api/locations", {
+      await fetch("/api/locations", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           latitude: lat,
           longitude: lng,
