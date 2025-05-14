@@ -11,6 +11,7 @@ type RotationSpeedDisplayProps = {
   activeUnit: "kph" | "mph" | "mps";
   onUnitChange: (unit: "kph" | "mph" | "mps") => void;
   latitude: number | null;
+  longitude: number | null;
 };
 
 export default function RotationSpeedDisplay({
@@ -18,6 +19,7 @@ export default function RotationSpeedDisplay({
   activeUnit,
   onUnitChange,
   latitude,
+  longitude,
 }: RotationSpeedDisplayProps) {
   const formatSpeed = (speed: number) => {
     return Math.round(speed).toLocaleString();
@@ -39,7 +41,7 @@ export default function RotationSpeedDisplay({
     <div className="flex-grow flex flex-col items-center justify-center my-4 md:my-8 relative">
       <div className="absolute w-52 h-52 md:w-72 md:h-72 bg-[#4DA8DA] opacity-5 rounded-full"></div>
       
-      <EarthVisualization latitude={latitude} />
+      <EarthVisualization latitude={latitude} longitude={longitude} />
       
       <div className="text-center mb-6">
         <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>

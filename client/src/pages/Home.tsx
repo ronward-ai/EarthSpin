@@ -123,6 +123,7 @@ export default function Home() {
           activeUnit={unit} 
           onUnitChange={setUnit} 
           latitude={latitude}
+          longitude={longitude}
         />
         
         <EducationalContent speeds={rotationSpeed} />
