@@ -1,83 +1,58 @@
-import { useState, useEffect } from "react";
-import LocationDisplay from "@/components/LocationDisplay";
-import RotationSpeedDisplay from "@/components/RotationSpeedDisplay";
-import EducationalContent from "@/components/EducationalContent";
-import ShareableCard from "@/components/ShareableCard";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { calculateRotationSpeed } from "@/lib/calculations";
-import { Globe } from "lucide-react";
+import { formatNumber } from "@/lib/units";
+import { Share, Check, Globe, MapPin, RefreshCw, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import EducationalContent from "@/components/EducationalContent";
 
-type LocationState = "idle" | "loading" | "success" | "error";
 type UnitType = "kph" | "mph" | "mps";
 
 export default function Home() {
-  const [locationState, setLocationState] = useState<LocationState>("idle");
+  // Application state
+  const [isLoading, setIsLoading] = useState(false);
+  const [locationError, setLocationError] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [unit, setUnit] = useState<UnitType>("kph");
-  const [rotationSpeed, setRotationSpeed] = useState<{
-    kph: number;
-    mph: number;
-    mps: number;
-  }>({ kph: 0, mph: 0, mps: 0 });
-  const [isSavingLocation, setIsSavingLocation] = useState(false);
+  const [activeUnit, setActiveUnit] = useState<UnitType>("kph");
+  const [copied, setCopied] = useState(false);
+  
   const { toast } = useToast();
 
-  // Initialize app with idle state
-  useEffect(() => {
-    // Reset to idle state on component mount
-    setLocationState("idle");
-    console.log("App initialized with state:", "idle");
-  }, []);
-
-  useEffect(() => {
-    if (latitude !== null) {
-      const speeds = calculateRotationSpeed(latitude);
-      setRotationSpeed(speeds);
-      
-      // Save location to database when we get a new reading
-      saveLocationToDatabase(latitude, longitude, speeds.kph);
-    }
-  }, [latitude, longitude]);
+  // Calculate speeds based on latitude
+  const speeds = latitude ? calculateRotationSpeed(latitude) : { kph: 0, mph: 0, mps: 0 };
   
-  // Save location data to the database
-  const saveLocationToDatabase = async (lat: number | null, lng: number | null, speed: number) => {
-    if (lat === null || lng === null) return;
-    
-    try {
-      setIsSavingLocation(true);
-      
-      await fetch("/api/locations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          latitude: lat,
-          longitude: lng,
-          rotationSpeedKph: speed,
-          // userId can be added when authentication is implemented
-        }),
-      });
-      
-      console.log("Location saved to database");
-    } catch (error) {
-      console.error("Error saving location:", error);
-      // Not showing a toast here to avoid annoying users
-    } finally {
-      setIsSavingLocation(false);
-    }
+  // Format display values
+  const formatLatitude = (lat: number | null) => {
+    if (lat === null) return "Unknown";
+    return `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}`;
   };
 
-  const getLocation = () => {
-    console.log("getLocation called, previous state:", locationState);
-    
-    // Set loading state first
-    setLocationState("loading");
-    console.log("State changed to loading");
-    
-    // Clear any previous location data
+  const formatLongitude = (long: number | null) => {
+    if (long === null) return "Unknown";
+    return `${Math.abs(long).toFixed(4)}° ${long >= 0 ? "E" : "W"}`;
+  };
+  
+  // Get current speed based on active unit
+  const getCurrentSpeed = () => {
+    if (activeUnit === "kph") return speeds.kph;
+    if (activeUnit === "mph") return speeds.mph;
+    return speeds.mps;
+  };
+  
+  // Get unit label based on active unit
+  const getUnitLabel = () => {
+    if (activeUnit === "kph") return "km/h";
+    if (activeUnit === "mph") return "mph";
+    return "m/s";
+  };
+  
+  // Calculate button handler
+  const handleCalculateSpeed = () => {
+    setIsLoading(true);
+    setLocationError(false);
     setLatitude(null);
     setLongitude(null);
     
@@ -86,43 +61,99 @@ export default function Home() {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log("Location retrieved:", position.coords);
+          console.log("Location success:", position.coords);
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
-          setLocationState("success");
-          console.log("State changed to success");
+          setIsLoading(false);
+          
+          // Save to database
+          saveLocationToDatabase(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
-          console.error("Error getting location:", error);
+          console.error("Location error:", error);
+          setLocationError(true);
+          setIsLoading(false);
           toast({
             title: "Location error",
             description: "We couldn't access your location. Please enable location services.",
             variant: "destructive",
           });
-          setLocationState("error");
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     } else {
       console.error("Geolocation not supported");
+      setLocationError(true);
+      setIsLoading(false);
       toast({
         title: "Geolocation not supported",
         description: "Your browser doesn't support geolocation.",
         variant: "destructive",
       });
-      setLocationState("error");
     }
   };
+  
+  // Save location to database
+  const saveLocationToDatabase = async (lat: number, lng: number) => {
+    try {
+      const response = await fetch("/api/locations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          latitude: lat,
+          longitude: lng,
+          rotationSpeedKph: speeds.kph,
+        }),
+      });
+      
+      if (response.ok) {
+        console.log("Location saved to database");
+      }
+    } catch (error) {
+      console.error("Error saving location:", error);
+    }
+  };
+  
+  // Share functionality
+  const handleShare = async () => {
+    const shareText = `I'm spinning at ${formatNumber(getCurrentSpeed())} ${getUnitLabel()}. Check your own Earth rotation speed at ${window.location.origin}`;
 
-  // Calculate current speed based on active unit
-  const getCurrentSpeed = () => {
-    if (unit === "kph") return rotationSpeed.kph;
-    if (unit === "mph") return rotationSpeed.mph;
-    return rotationSpeed.mps;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'EarthSpin - Earth Rotation Speed',
+          text: shareText,
+          url: window.location.href,
+        });
+        toast({
+          title: "Shared successfully",
+          description: "Your rotation speed has been shared!",
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+        handleCopy(shareText);
+      }
+    } else {
+      handleCopy(shareText);
+    }
+  };
+  
+  // Copy text to clipboard
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    toast({
+      title: "Copied to clipboard",
+      description: "Share text copied to clipboard!",
+    });
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <div className="flex flex-col min-h-screen starry-sky text-white">
+      {/* Header */}
       <header className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-b border-white/5">
         <div className="container mx-auto">
           <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center">
@@ -133,44 +164,200 @@ export default function Home() {
       </header>
 
       <main className="flex-grow container mx-auto p-4 md:p-8 flex flex-col">
-        <LocationDisplay 
-          status={locationState} 
-          latitude={latitude} 
-          longitude={longitude} 
-          onRefresh={getLocation} 
-        />
+        {/* Location Card */}
+        <Card className="bg-[#0a0e1f]/40 rounded-xl mb-6 backdrop-blur-md border border-white/10 shadow-lg">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-medium text-lg text-[#4DA8DA]">Your Location</h2>
+              {latitude !== null && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleCalculateSpeed}
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                  disabled={isLoading}
+                >
+                  <RefreshCw className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+                </Button>
+              )}
+            </div>
+
+            {/* Initial state - Show calculate button */}
+            {latitude === null && !isLoading && !locationError && (
+              <div className="py-4 flex flex-col items-center justify-center">
+                <p className="text-sm opacity-75 mb-3">
+                  Calculate how fast you're spinning on Earth based on your location.
+                </p>
+                <Button 
+                  onClick={handleCalculateSpeed}
+                  className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
+                  size="lg"
+                >
+                  Calculate My Speed
+                </Button>
+              </div>
+            )}
+
+            {/* Loading state */}
+            {isLoading && (
+              <div className="py-4 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#4DA8DA]"></div>
+                <span className="ml-3 text-sm opacity-75">Determining your location...</span>
+              </div>
+            )}
+
+            {/* Error state */}
+            {locationError && !isLoading && (
+              <div className="py-4">
+                <div className="flex items-start">
+                  <AlertCircle className="mr-2 h-5 w-5 flex-shrink-0 text-[#E63946]" />
+                  <div>
+                    <p className="font-medium text-[#E63946]">Location access denied</p>
+                    <p className="text-sm opacity-85">
+                      Please enable location services to see your Earth rotation speed.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 flex justify-center">
+                  <Button 
+                    onClick={handleCalculateSpeed}
+                    className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
+                  >
+                    Try Again
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Success state - show coordinates */}
+            {latitude !== null && !isLoading && (
+              <div className="py-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center">
+                    <MapPin className="text-[#F2D399] mr-2 h-5 w-5" />
+                    <div>
+                      <span className="text-sm opacity-75">Latitude</span>
+                      <p className="text-xl font-medium">{formatLatitude(latitude)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Globe className="text-[#F2D399] mr-2 h-5 w-5" />
+                    <div>
+                      <span className="text-sm opacity-75">Longitude</span>
+                      <p className="text-xl font-medium">{formatLongitude(longitude)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
         
-        <RotationSpeedDisplay 
-          status={locationState}
-          speeds={rotationSpeed} 
-          activeUnit={unit} 
-          onUnitChange={setUnit} 
-          latitude={latitude}
-          longitude={longitude}
-        />
+        {/* Rotation Speed Display */}
+        <div className="flex-grow flex flex-col items-center justify-center my-4 md:my-8 relative">
+          <div className="absolute w-52 h-52 md:w-72 md:h-72 bg-[#4DA8DA] opacity-5 rounded-full"></div>
+          
+          {/* Earth Visualization */}
+          <div className="w-full max-w-md h-44 relative flex justify-center items-center mb-4">
+            <div className="w-full h-full rounded-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
+            
+            {/* Equator line */}
+            <div className="absolute w-full h-0.5 bg-[#F2D399]/70 shadow-lg shadow-[#F2D399]/30"></div>
+            
+            {/* Position marker */}
+            {latitude !== null && (
+              <div 
+                className="absolute w-5 h-5 flex items-center justify-center"
+                style={{ 
+                  right: `${50 - (latitude / 90) * 50}%`, 
+                  top: `${50}%`,
+                  transform: 'translate(50%, -50%)'
+                }}
+              >
+                <span className="w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping absolute"></span>
+                <span className="w-3 h-3 bg-[#F2D399] rounded-full shadow-lg shadow-[#F2D399]/50 relative"></span>
+              </div>
+            )}
+          </div>
+          
+          {/* Speed Display */}
+          {latitude === null ? (
+            <div className="text-center mb-6 opacity-70">
+              <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">Discover Your Rotation Speed</h2>
+              <p className="max-w-md mx-auto text-sm">
+                Click the Calculate button above to find out how fast you're spinning on Earth right now.
+              </p>
+            </div>
+          ) : (
+            <div className="text-center mb-6">
+              <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
+              
+              <div className="text-5xl md:text-7xl font-bold my-4">
+                {formatNumber(getCurrentSpeed())}
+              </div>
+              
+              <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
+                <Button
+                  variant={activeUnit === "kph" ? "default" : "ghost"}
+                  className={`px-4 py-2 rounded-full ${
+                    activeUnit === "kph" 
+                      ? "bg-[#4DA8DA]/80 text-white" 
+                      : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => setActiveUnit("kph")}
+                >
+                  km/h
+                </Button>
+                <Button
+                  variant={activeUnit === "mph" ? "default" : "ghost"}
+                  className={`px-4 py-2 rounded-full ${
+                    activeUnit === "mph" 
+                      ? "bg-[#4DA8DA]/80 text-white" 
+                      : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => setActiveUnit("mph")}
+                >
+                  mph
+                </Button>
+                <Button
+                  variant={activeUnit === "mps" ? "default" : "ghost"}
+                  className={`px-4 py-2 rounded-full ${
+                    activeUnit === "mps" 
+                      ? "bg-[#4DA8DA]/80 text-white" 
+                      : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => setActiveUnit("mps")}
+                >
+                  m/s
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
         
-        {/* Always render the Share button if we have a valid speed to share */}
+        {/* Share Button - only show if we have calculated speeds */}
         {latitude !== null && (
           <>
             <Separator className="my-6 bg-white/20" />
             
-            <ShareableCard
-              latitude={latitude}
-              longitude={longitude}
-              speed={getCurrentSpeed()}
-              unit={unit}
-            />
+            <div className="mt-8 mb-6 flex flex-col items-center">
+              <Button 
+                onClick={handleShare} 
+                className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] px-6 py-5 text-lg h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
+                size="lg"
+              >
+                {copied ? <Check className="h-5 w-5 mr-2" /> : <Share className="h-5 w-5 mr-2" />}
+                {copied ? "Copied!" : "Share Your Rotation Speed"}
+              </Button>
+            </div>
           </>
         )}
         
-        {/* Debug info */}
-        <div className="text-xs text-white/30 mt-4 mb-2 text-center">
-          Debug: State={locationState}, Lat={latitude?.toString() || "null"}, Speed={getCurrentSpeed()}
-        </div>
-        
-        <EducationalContent speeds={rotationSpeed} />
+        {/* Educational Content */}
+        <EducationalContent speeds={speeds} />
       </main>
 
+      {/* Footer */}
       <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5">
         <div className="container mx-auto text-sm text-center text-white/70">
           <p className="text-[#4DA8DA]/90">EarthSpin - Experience the movement you never realized was happening.</p>
