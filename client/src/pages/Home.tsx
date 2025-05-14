@@ -5,6 +5,7 @@ import EducationalContent from "@/components/EducationalContent";
 import { calculateRotationSpeed } from "@/lib/calculations";
 import { Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 type LocationState = "idle" | "loading" | "success" | "error";
 type UnitType = "kph" | "mph" | "mps";
@@ -19,6 +20,7 @@ export default function Home() {
     mph: number;
     mps: number;
   }>({ kph: 0, mph: 0, mps: 0 });
+  const [isSavingLocation, setIsSavingLocation] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -31,8 +33,37 @@ export default function Home() {
     if (latitude !== null) {
       const speeds = calculateRotationSpeed(latitude);
       setRotationSpeed(speeds);
+      
+      // Save location to database when we get a new reading
+      saveLocationToDatabase(latitude, longitude, speeds.kph);
     }
-  }, [latitude]);
+  }, [latitude, longitude]);
+  
+  // Save location data to the database
+  const saveLocationToDatabase = async (lat: number | null, lng: number | null, speed: number) => {
+    if (lat === null || lng === null) return;
+    
+    try {
+      setIsSavingLocation(true);
+      
+      await apiRequest("/api/locations", {
+        method: "POST",
+        body: JSON.stringify({
+          latitude: lat,
+          longitude: lng,
+          rotationSpeedKph: speed,
+          // userId can be added when authentication is implemented
+        }),
+      });
+      
+      console.log("Location saved to database");
+    } catch (error) {
+      console.error("Error saving location:", error);
+      // Not showing a toast here to avoid annoying users
+    } finally {
+      setIsSavingLocation(false);
+    }
+  };
 
   const getLocation = () => {
     setLocationState("loading");
