@@ -55,45 +55,65 @@ export default function Home() {
   
   // Calculate button handler
   const handleCalculate = () => {
-    console.log("Calculate button clicked");
-    setIsLoading(true);
-    setHasError(false);
-    
-    if (!navigator.geolocation) {
-      console.error("Geolocation not supported");
-      setHasError(true);
-      setIsLoading(false);
-      toast({
-        title: "Geolocation not supported",
-        description: "Your browser doesn't support geolocation.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Request location from browser
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // Success
-        console.log("Got location:", position.coords.latitude, position.coords.longitude);
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-        setIsLoading(false);
-        saveLocation(position.coords.latitude, position.coords.longitude);
-      },
-      (error) => {
-        // Error
-        console.error("Location error:", error);
+    try {
+      console.log("Calculate button clicked");
+      // Show a console log message when the button is clicked
+      window.alert("Debug: Calculate button clicked. Check console for details.");
+      
+      setIsLoading(true);
+      setHasError(false);
+      
+      if (!navigator.geolocation) {
+        console.error("Geolocation not supported");
         setHasError(true);
         setIsLoading(false);
         toast({
-          title: "Location error",
-          description: "Could not access your location. Please enable location services.",
+          title: "Geolocation not supported",
+          description: "Your browser doesn't support geolocation.",
           variant: "destructive"
         });
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+        return;
+      }
+      
+      console.log("Requesting geolocation permission...");
+      
+      // Request location from browser with more explicit options
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Success
+          console.log("Got location:", position.coords.latitude, position.coords.longitude);
+          window.alert(`Debug: Got location: ${position.coords.latitude}, ${position.coords.longitude}`);
+          
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          setIsLoading(false);
+          saveLocation(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          // Error
+          console.error("Location error:", error.code, error.message);
+          window.alert(`Debug: Location error: ${error.code} - ${error.message}`);
+          
+          setHasError(true);
+          setIsLoading(false);
+          toast({
+            title: "Location error",
+            description: `Could not access your location (${error.message}). Please enable location services.`,
+            variant: "destructive"
+          });
+        },
+        { 
+          enableHighAccuracy: true, 
+          timeout: 30000,  // Longer timeout
+          maximumAge: 0    // Always get fresh position
+        }
+      );
+    } catch (err) {
+      console.error("Unexpected error in handleCalculate:", err);
+      window.alert(`Debug: Unexpected error: ${err}`);
+      setHasError(true);
+      setIsLoading(false);
+    }
   };
   
   // Save location to database
@@ -182,8 +202,13 @@ export default function Home() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleCalculate}
+                  onClick={() => {
+                    console.log("Refresh button clicked");
+                    window.alert("Debug: Refresh button clicked");
+                    handleCalculate();
+                  }}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                  type="button"
                 >
                   <RefreshCw className="h-5 w-5" />
                 </Button>
@@ -197,9 +222,13 @@ export default function Home() {
                   Calculate how fast you're spinning on Earth based on your location.
                 </p>
                 <Button 
-                  onClick={handleCalculate}
+                  onClick={() => {
+                    console.log("Button clicked directly"); 
+                    handleCalculate();
+                  }}
                   className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
                   size="lg"
+                  type="button"
                 >
                   Calculate My Speed
                 </Button>
@@ -228,8 +257,13 @@ export default function Home() {
                 </div>
                 <div className="mt-3 flex justify-center">
                   <Button 
-                    onClick={handleCalculate}
+                    onClick={() => {
+                      console.log("Try Again clicked");
+                      window.alert("Debug: Try Again clicked");
+                      handleCalculate();
+                    }}
                     className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
+                    type="button"
                   >
                     Try Again
                   </Button>
