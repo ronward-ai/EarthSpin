@@ -47,7 +47,8 @@ export default function LocationDisplay({
             </p>
             <Button 
               onClick={onRefresh}
-              className="bg-[#4DA8DA] hover:bg-[#4DA8DA]/80 text-white"
+              className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
+              size="lg"
             >
               Calculate My Speed
             </Button>
