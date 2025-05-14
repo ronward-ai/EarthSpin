@@ -46,7 +46,10 @@ export default function LocationDisplay({
               Calculate how fast you're spinning on Earth based on your location.
             </p>
             <Button 
-              onClick={onRefresh}
+              onClick={() => {
+                console.log("Calculate button clicked");
+                onRefresh();
+              }}
               className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
               size="lg"
             >

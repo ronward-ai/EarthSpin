@@ -28,6 +28,7 @@ export default function Home() {
   useEffect(() => {
     // Reset to idle state on component mount
     setLocationState("idle");
+    console.log("App initialized with state:", "idle");
   }, []);
 
   useEffect(() => {
@@ -70,8 +71,11 @@ export default function Home() {
   };
 
   const getLocation = () => {
+    console.log("getLocation called, previous state:", locationState);
+    
     // Set loading state first
     setLocationState("loading");
+    console.log("State changed to loading");
     
     // Clear any previous location data
     setLatitude(null);
@@ -86,6 +90,7 @@ export default function Home() {
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
           setLocationState("success");
+          console.log("State changed to success");
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -144,7 +149,8 @@ export default function Home() {
           longitude={longitude}
         />
         
-        {locationState === "success" && (
+        {/* Always render the Share button if we have a valid speed to share */}
+        {latitude !== null && (
           <>
             <Separator className="my-6 bg-white/20" />
             
@@ -156,6 +162,11 @@ export default function Home() {
             />
           </>
         )}
+        
+        {/* Debug info */}
+        <div className="text-xs text-white/30 mt-4 mb-2 text-center">
+          Debug: State={locationState}, Lat={latitude?.toString() || "null"}, Speed={getCurrentSpeed()}
+        </div>
         
         <EducationalContent speeds={rotationSpeed} />
       </main>
