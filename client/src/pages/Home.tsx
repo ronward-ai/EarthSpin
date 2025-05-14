@@ -3,7 +3,7 @@ import LocationDisplay from "@/components/LocationDisplay";
 import RotationSpeedDisplay from "@/components/RotationSpeedDisplay";
 import EducationalContent from "@/components/EducationalContent";
 import { calculateRotationSpeed } from "@/lib/calculations";
-import { Globe, HelpCircle } from "lucide-react";
+import { Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type LocationState = "idle" | "loading" | "success" | "error";
@@ -68,15 +68,11 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1C3359] text-white">
       <header className="py-4 px-6 bg-[#1C3359]/50 backdrop-blur-sm">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold flex items-center">
+        <div className="container mx-auto">
+          <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center">
             <Globe className="mr-2 text-[#4DA8DA]" />
             EarthSpin
           </h1>
-          <div className="flex items-center space-x-2">
-            <HelpCircle className="text-[#F2D399]" />
-            <span className="hidden md:inline text-sm">About Earth's Rotation</span>
-          </div>
         </div>
       </header>
 
