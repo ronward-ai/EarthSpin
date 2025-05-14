@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import EarthVisualization from "./EarthVisualization";
 
 type RotationSpeedDisplayProps = {
+  status: "idle" | "loading" | "success" | "error";
   speeds: {
     kph: number;
     mph: number;
@@ -15,6 +16,7 @@ type RotationSpeedDisplayProps = {
 };
 
 export default function RotationSpeedDisplay({
+  status,
   speeds,
   activeUnit,
   onUnitChange,
@@ -43,51 +45,64 @@ export default function RotationSpeedDisplay({
       
       <EarthVisualization latitude={latitude} longitude={longitude} />
       
-      <div className="text-center mb-6">
-        <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
-        
-        <div className="text-5xl md:text-7xl font-bold my-4">
-          {getDisplaySpeed()}
+      {status === "idle" ? (
+        <div className="text-center mb-6 opacity-70">
+          <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">Discover Your Rotation Speed</h2>
+          <p className="max-w-md mx-auto text-sm">
+            Click the Calculate button above to find out how fast you're spinning on Earth right now.
+          </p>
         </div>
-        
-        <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
-          <Button
-            variant={activeUnit === "kph" ? "default" : "ghost"}
-            className={`px-4 py-2 rounded-full ${
-              activeUnit === "kph" 
-                ? "bg-[#4DA8DA]/80 text-white" 
-                : "text-white/70 hover:text-white"
-            }`}
-            onClick={() => onUnitChange("kph")}
-          >
-            km/h
-          </Button>
-          <Button
-            variant={activeUnit === "mph" ? "default" : "ghost"}
-            className={`px-4 py-2 rounded-full ${
-              activeUnit === "mph" 
-                ? "bg-[#4DA8DA]/80 text-white" 
-                : "text-white/70 hover:text-white"
-            }`}
-            onClick={() => onUnitChange("mph")}
-          >
-            mph
-          </Button>
-          <Button
-            variant={activeUnit === "mps" ? "default" : "ghost"}
-            className={`px-4 py-2 rounded-full ${
-              activeUnit === "mps" 
-                ? "bg-[#4DA8DA]/80 text-white" 
-                : "text-white/70 hover:text-white"
-            }`}
-            onClick={() => onUnitChange("mps")}
-          >
-            m/s
-          </Button>
+      ) : (
+        <div className="text-center mb-6">
+          <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">
+            {status === "success" ? "You are spinning at" : "Calculating speed..."}
+          </h2>
+          
+          {status === "success" && (
+            <>
+              <div className="text-5xl md:text-7xl font-bold my-4">
+                {getDisplaySpeed()}
+              </div>
+              
+              <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
+                <Button
+                  variant={activeUnit === "kph" ? "default" : "ghost"}
+                  className={`px-4 py-2 rounded-full ${
+                    activeUnit === "kph" 
+                      ? "bg-[#4DA8DA]/80 text-white" 
+                      : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => onUnitChange("kph")}
+                >
+                  km/h
+                </Button>
+                <Button
+                  variant={activeUnit === "mph" ? "default" : "ghost"}
+                  className={`px-4 py-2 rounded-full ${
+                    activeUnit === "mph" 
+                      ? "bg-[#4DA8DA]/80 text-white" 
+                      : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => onUnitChange("mph")}
+                >
+                  mph
+                </Button>
+                <Button
+                  variant={activeUnit === "mps" ? "default" : "ghost"}
+                  className={`px-4 py-2 rounded-full ${
+                    activeUnit === "mps" 
+                      ? "bg-[#4DA8DA]/80 text-white" 
+                      : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => onUnitChange("mps")}
+                >
+                  m/s
+                </Button>
+              </div>
+            </>
+          )}
         </div>
-        
-
-      </div>
+      )}
     </div>
   );
 }

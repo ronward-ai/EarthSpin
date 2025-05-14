@@ -40,6 +40,20 @@ export default function LocationDisplay({
           </Button>
         </div>
 
+        {status === "idle" && (
+          <div className="py-4 flex flex-col items-center justify-center">
+            <p className="text-sm opacity-75 mb-3">
+              Calculate how fast you're spinning on Earth based on your location.
+            </p>
+            <Button 
+              onClick={onRefresh}
+              className="bg-[#4DA8DA] hover:bg-[#4DA8DA]/80 text-white"
+            >
+              Calculate My Speed
+            </Button>
+          </div>
+        )}
+
         {status === "loading" && (
           <div className="py-4 flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#4DA8DA]"></div>
@@ -57,6 +71,15 @@ export default function LocationDisplay({
                   Please enable location services to see your Earth rotation speed.
                 </p>
               </div>
+            </div>
+            <div className="mt-3 flex justify-center">
+              <Button 
+                onClick={onRefresh}
+                variant="outline"
+                className="border-[#4DA8DA] text-[#4DA8DA] hover:bg-[#4DA8DA]/10"
+              >
+                Try Again
+              </Button>
             </div>
           </div>
         )}

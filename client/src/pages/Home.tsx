@@ -24,11 +24,7 @@ export default function Home() {
   const [isSavingLocation, setIsSavingLocation] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (locationState === "idle") {
-      getLocation();
-    }
-  }, [locationState]);
+  // Removed auto-location fetching on mount
 
   useEffect(() => {
     if (latitude !== null) {
@@ -127,6 +123,7 @@ export default function Home() {
         />
         
         <RotationSpeedDisplay 
+          status={locationState}
           speeds={rotationSpeed} 
           activeUnit={unit} 
           onUnitChange={setUnit} 
