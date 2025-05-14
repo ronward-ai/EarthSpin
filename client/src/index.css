@@ -10,7 +10,7 @@
 
 .starry-sky::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -40,7 +40,7 @@
 /* Add twinkling animation for a few stars */
 .starry-sky::after {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
