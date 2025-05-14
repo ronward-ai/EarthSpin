@@ -1,100 +1,103 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Globe, Share, Check, MapPin, RefreshCw, AlertCircle } from "lucide-react";
 import { calculateRotationSpeed } from "@/lib/calculations";
 import { formatNumber } from "@/lib/units";
-import { Share, Check, Globe, MapPin, RefreshCw, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
 import EducationalContent from "@/components/EducationalContent";
 
+// Type definitions
 type UnitType = "kph" | "mph" | "mps";
 
 export default function Home() {
-  // Application state
+  // State
   const [isLoading, setIsLoading] = useState(false);
-  const [locationError, setLocationError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [activeUnit, setActiveUnit] = useState<UnitType>("kph");
+  const [unit, setUnit] = useState<UnitType>("kph");
   const [copied, setCopied] = useState(false);
   
   const { toast } = useToast();
-
-  // Calculate speeds based on latitude
-  const speeds = latitude ? calculateRotationSpeed(latitude) : { kph: 0, mph: 0, mps: 0 };
   
-  // Format display values
+  // Calculate speeds based on latitude
+  const speeds = latitude !== null 
+    ? calculateRotationSpeed(latitude)
+    : { kph: 0, mph: 0, mps: 0 };
+  
+  // Format latitude display
   const formatLatitude = (lat: number | null) => {
     if (lat === null) return "Unknown";
     return `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}`;
   };
-
-  const formatLongitude = (long: number | null) => {
-    if (long === null) return "Unknown";
-    return `${Math.abs(long).toFixed(4)}° ${long >= 0 ? "E" : "W"}`;
+  
+  // Format longitude display
+  const formatLongitude = (lng: number | null) => {
+    if (lng === null) return "Unknown";
+    return `${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? "E" : "W"}`;
   };
   
-  // Get current speed based on active unit
+  // Get current speed in the selected unit
   const getCurrentSpeed = () => {
-    if (activeUnit === "kph") return speeds.kph;
-    if (activeUnit === "mph") return speeds.mph;
+    if (unit === "kph") return speeds.kph;
+    if (unit === "mph") return speeds.mph;
     return speeds.mps;
   };
   
-  // Get unit label based on active unit
+  // Get unit label
   const getUnitLabel = () => {
-    if (activeUnit === "kph") return "km/h";
-    if (activeUnit === "mph") return "mph";
+    if (unit === "kph") return "km/h";
+    if (unit === "mph") return "mph";
     return "m/s";
   };
   
   // Calculate button handler
-  const handleCalculateSpeed = () => {
+  const handleCalculate = () => {
+    console.log("Calculate button clicked");
     setIsLoading(true);
-    setLocationError(false);
-    setLatitude(null);
-    setLongitude(null);
+    setHasError(false);
     
-    console.log("Getting location...");
-    
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log("Location success:", position.coords);
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          setIsLoading(false);
-          
-          // Save to database
-          saveLocationToDatabase(position.coords.latitude, position.coords.longitude);
-        },
-        (error) => {
-          console.error("Location error:", error);
-          setLocationError(true);
-          setIsLoading(false);
-          toast({
-            title: "Location error",
-            description: "We couldn't access your location. Please enable location services.",
-            variant: "destructive",
-          });
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      );
-    } else {
+    if (!navigator.geolocation) {
       console.error("Geolocation not supported");
-      setLocationError(true);
+      setHasError(true);
       setIsLoading(false);
       toast({
         title: "Geolocation not supported",
         description: "Your browser doesn't support geolocation.",
-        variant: "destructive",
+        variant: "destructive"
       });
+      return;
     }
+    
+    // Request location from browser
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // Success
+        console.log("Got location:", position.coords.latitude, position.coords.longitude);
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+        setIsLoading(false);
+        saveLocation(position.coords.latitude, position.coords.longitude);
+      },
+      (error) => {
+        // Error
+        console.error("Location error:", error);
+        setHasError(true);
+        setIsLoading(false);
+        toast({
+          title: "Location error",
+          description: "Could not access your location. Please enable location services.",
+          variant: "destructive"
+        });
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
   
   // Save location to database
-  const saveLocationToDatabase = async (lat: number, lng: number) => {
+  const saveLocation = async (lat: number, lng: number) => {
     try {
       const response = await fetch("/api/locations", {
         method: "POST",
@@ -104,35 +107,39 @@ export default function Home() {
         body: JSON.stringify({
           latitude: lat,
           longitude: lng,
-          rotationSpeedKph: speeds.kph,
-        }),
+          rotationSpeedKph: speeds.kph
+        })
       });
       
       if (response.ok) {
         console.log("Location saved to database");
+      } else {
+        console.error("Failed to save location");
       }
     } catch (error) {
       console.error("Error saving location:", error);
     }
   };
   
-  // Share functionality
+  // Handle share button click
   const handleShare = async () => {
+    if (!latitude) return;
+    
     const shareText = `I'm spinning at ${formatNumber(getCurrentSpeed())} ${getUnitLabel()}. Check your own Earth rotation speed at ${window.location.origin}`;
-
+    
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'EarthSpin - Earth Rotation Speed',
+          title: "EarthSpin - Earth's Rotation Speed",
           text: shareText,
-          url: window.location.href,
+          url: window.location.href
         });
         toast({
           title: "Shared successfully",
-          description: "Your rotation speed has been shared!",
+          description: "Thanks for sharing!"
         });
       } catch (error) {
-        console.error('Error sharing:', error);
+        console.error("Share error:", error);
         handleCopy(shareText);
       }
     } else {
@@ -140,17 +147,17 @@ export default function Home() {
     }
   };
   
-  // Copy text to clipboard
+  // Copy to clipboard fallback
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     toast({
       title: "Copied to clipboard",
-      description: "Share text copied to clipboard!",
+      description: "Share text copied!"
     });
     setTimeout(() => setCopied(false), 2000);
   };
-
+  
   return (
     <div className="flex flex-col min-h-screen starry-sky text-white">
       {/* Header */}
@@ -158,7 +165,9 @@ export default function Home() {
         <div className="container mx-auto">
           <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center">
             <Globe className="mr-2 text-[#4DA8DA]" />
-            <span className="bg-gradient-to-r from-blue-300 to-[#4DA8DA] text-transparent bg-clip-text">EarthSpin</span>
+            <span className="bg-gradient-to-r from-blue-300 to-[#4DA8DA] text-transparent bg-clip-text">
+              EarthSpin
+            </span>
           </h1>
         </div>
       </header>
@@ -169,27 +178,26 @@ export default function Home() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <h2 className="font-medium text-lg text-[#4DA8DA]">Your Location</h2>
-              {latitude !== null && (
+              {latitude !== null && !isLoading && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleCalculateSpeed}
+                  onClick={handleCalculate}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                  disabled={isLoading}
                 >
-                  <RefreshCw className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+                  <RefreshCw className="h-5 w-5" />
                 </Button>
               )}
             </div>
-
-            {/* Initial state - Show calculate button */}
-            {latitude === null && !isLoading && !locationError && (
+            
+            {/* Initial state */}
+            {latitude === null && !isLoading && !hasError && (
               <div className="py-4 flex flex-col items-center justify-center">
                 <p className="text-sm opacity-75 mb-3">
                   Calculate how fast you're spinning on Earth based on your location.
                 </p>
                 <Button 
-                  onClick={handleCalculateSpeed}
+                  onClick={handleCalculate}
                   className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
                   size="lg"
                 >
@@ -197,7 +205,7 @@ export default function Home() {
                 </Button>
               </div>
             )}
-
+            
             {/* Loading state */}
             {isLoading && (
               <div className="py-4 flex items-center justify-center">
@@ -205,9 +213,9 @@ export default function Home() {
                 <span className="ml-3 text-sm opacity-75">Determining your location...</span>
               </div>
             )}
-
+            
             {/* Error state */}
-            {locationError && !isLoading && (
+            {hasError && !isLoading && (
               <div className="py-4">
                 <div className="flex items-start">
                   <AlertCircle className="mr-2 h-5 w-5 flex-shrink-0 text-[#E63946]" />
@@ -220,7 +228,7 @@ export default function Home() {
                 </div>
                 <div className="mt-3 flex justify-center">
                   <Button 
-                    onClick={handleCalculateSpeed}
+                    onClick={handleCalculate}
                     className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
                   >
                     Try Again
@@ -228,8 +236,8 @@ export default function Home() {
                 </div>
               </div>
             )}
-
-            {/* Success state - show coordinates */}
+            
+            {/* Success state */}
             {latitude !== null && !isLoading && (
               <div className="py-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -253,13 +261,15 @@ export default function Home() {
           </CardContent>
         </Card>
         
-        {/* Rotation Speed Display */}
+        {/* Earth Visualization and Speed */}
         <div className="flex-grow flex flex-col items-center justify-center my-4 md:my-8 relative">
           <div className="absolute w-52 h-52 md:w-72 md:h-72 bg-[#4DA8DA] opacity-5 rounded-full"></div>
           
-          {/* Earth Visualization */}
-          <div className="w-full max-w-md h-44 relative flex justify-center items-center mb-4">
-            <div className="w-full h-full rounded-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
+          {/* Earth visualization */}
+          <div className="relative mb-8 h-40 w-40 md:h-52 md:w-52 flex items-center justify-center">
+            <div className="absolute w-full h-full rounded-full overflow-hidden">
+              <div className="w-full h-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
+            </div>
             
             {/* Equator line */}
             <div className="absolute w-full h-0.5 bg-[#F2D399]/70 shadow-lg shadow-[#F2D399]/30"></div>
@@ -269,8 +279,8 @@ export default function Home() {
               <div 
                 className="absolute w-5 h-5 flex items-center justify-center"
                 style={{ 
-                  right: `${50 - (latitude / 90) * 50}%`, 
-                  top: `${50}%`,
+                  right: `30%`,
+                  top: `${((90 - latitude) / 180) * 100}%`,
                   transform: 'translate(50%, -50%)'
                 }}
               >
@@ -280,7 +290,7 @@ export default function Home() {
             )}
           </div>
           
-          {/* Speed Display */}
+          {/* Speed display */}
           {latitude === null ? (
             <div className="text-center mb-6 opacity-70">
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">Discover Your Rotation Speed</h2>
@@ -298,35 +308,35 @@ export default function Home() {
               
               <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
                 <Button
-                  variant={activeUnit === "kph" ? "default" : "ghost"}
+                  variant={unit === "kph" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
-                    activeUnit === "kph" 
+                    unit === "kph" 
                       ? "bg-[#4DA8DA]/80 text-white" 
                       : "text-white/70 hover:text-white"
                   }`}
-                  onClick={() => setActiveUnit("kph")}
+                  onClick={() => setUnit("kph")}
                 >
                   km/h
                 </Button>
                 <Button
-                  variant={activeUnit === "mph" ? "default" : "ghost"}
+                  variant={unit === "mph" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
-                    activeUnit === "mph" 
+                    unit === "mph" 
                       ? "bg-[#4DA8DA]/80 text-white" 
                       : "text-white/70 hover:text-white"
                   }`}
-                  onClick={() => setActiveUnit("mph")}
+                  onClick={() => setUnit("mph")}
                 >
                   mph
                 </Button>
                 <Button
-                  variant={activeUnit === "mps" ? "default" : "ghost"}
+                  variant={unit === "mps" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
-                    activeUnit === "mps" 
+                    unit === "mps" 
                       ? "bg-[#4DA8DA]/80 text-white" 
                       : "text-white/70 hover:text-white"
                   }`}
-                  onClick={() => setActiveUnit("mps")}
+                  onClick={() => setUnit("mps")}
                 >
                   m/s
                 </Button>
@@ -335,12 +345,12 @@ export default function Home() {
           )}
         </div>
         
-        {/* Share Button - only show if we have calculated speeds */}
+        {/* Share Button */}
         {latitude !== null && (
           <>
             <Separator className="my-6 bg-white/20" />
             
-            <div className="mt-8 mb-6 flex flex-col items-center">
+            <div className="mt-2 mb-6 flex flex-col items-center">
               <Button 
                 onClick={handleShare} 
                 className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] px-6 py-5 text-lg h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
