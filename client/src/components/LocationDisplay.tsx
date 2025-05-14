@@ -26,7 +26,7 @@ export default function LocationDisplay({
   };
 
   return (
-    <Card className="bg-[#1C3359]/30 rounded-xl mb-6 backdrop-blur-md border-none">
+    <Card className="bg-[#0a0e1f]/40 rounded-xl mb-6 backdrop-blur-md border border-white/10 shadow-lg">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <h2 className="font-medium text-lg text-[#4DA8DA]">Your Location</h2>

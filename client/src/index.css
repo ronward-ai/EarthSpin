@@ -2,6 +2,100 @@
 @tailwind components;
 @tailwind utilities;
 
+.starry-sky {
+  background: linear-gradient(to bottom, #0a0e1f 0%, #0e1d3b 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.starry-sky::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(1px 1px at 25% 15%, white, transparent),
+    radial-gradient(1px 1px at 50% 40%, white, transparent),
+    radial-gradient(1px 1px at 75% 25%, white, transparent),
+    radial-gradient(1.5px 1.5px at 10% 60%, white, transparent),
+    radial-gradient(1.5px 1.5px at 30% 85%, white, transparent),
+    radial-gradient(1.5px 1.5px at 65% 70%, white, transparent),
+    radial-gradient(1px 1px at 85% 45%, white, transparent),
+    radial-gradient(1.5px 1.5px at 95% 90%, white, transparent),
+    radial-gradient(1px 1px at 15% 75%, white, transparent),
+    radial-gradient(1px 1px at 35% 35%, white, transparent),
+    radial-gradient(1px 1px at 55% 55%, white, transparent),
+    radial-gradient(1px 1px at 45% 95%, white, transparent),
+    radial-gradient(1px 1px at 80% 5%, white, transparent),
+    radial-gradient(1.5px 1.5px at 90% 50%, white, transparent),
+    radial-gradient(1px 1px at 5% 10%, white, transparent),
+    radial-gradient(1.5px 1.5px at 20% 50%, white, transparent),
+    radial-gradient(0.5px 0.5px at 7% 30%, white, transparent),
+    radial-gradient(0.5px 0.5px at 13% 20%, white, transparent),
+    radial-gradient(0.5px 0.5px at 23% 55%, white, transparent),
+    radial-gradient(0.5px 0.5px at 37% 70%, white, transparent),
+    radial-gradient(0.5px 0.5px at 48% 25%, white, transparent),
+    radial-gradient(0.5px 0.5px at 52% 67%, white, transparent),
+    radial-gradient(0.5px 0.5px at 63% 33%, white, transparent),
+    radial-gradient(0.5px 0.5px at 72% 12%, white, transparent),
+    radial-gradient(0.5px 0.5px at 82% 36%, white, transparent),
+    radial-gradient(0.5px 0.5px at 97% 55%, white, transparent),
+    radial-gradient(0.5px 0.5px at 94% 22%, white, transparent),
+    radial-gradient(0.5px 0.5px at 57% 88%, white, transparent),
+    radial-gradient(0.5px 0.5px at 67% 78%, white, transparent),
+    radial-gradient(0.5px 0.5px at 77% 63%, white, transparent),
+    radial-gradient(0.5px 0.5px at 83% 73%, white, transparent),
+    radial-gradient(0.5px 0.5px at 26% 83%, white, transparent);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+/* Add twinkling animation for a few stars */
+.starry-sky::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 30% 20%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 60% 35%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 10% 40%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2.5px 2.5px at 15% 15%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2.5px 2.5px at 45% 45%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2.5px 2.5px at 75% 75%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2.5px 2.5px at 85% 40%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(3px 3px at 20% 65%, rgba(255, 253, 225, 0.9), transparent),
+    radial-gradient(3px 3px at 55% 25%, rgba(255, 253, 225, 0.9), transparent),
+    radial-gradient(3px 3px at 90% 85%, rgba(255, 253, 225, 0.9), transparent);
+  opacity: 0;
+  z-index: 0;
+  animation: twinkle 6s infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.1; }
+}
+
+/* Make text more readable against the starry background */
+.starry-sky h1, 
+.starry-sky h2, 
+.starry-sky h3 {
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+}
+
+/* Add a slight blue glow to buttons for a space theme */
+.starry-sky button {
+  text-shadow: 0 0 2px rgba(77, 168, 218, 0.5);
+}
+
 :root {
       --background: 0 0% 100%;
 --foreground: 20 14.3% 4.1%;

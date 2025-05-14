@@ -14,7 +14,7 @@ export default function EducationalContent({ speeds }: EducationalContentProps) 
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className="bg-[#1C3359]/30 rounded-xl backdrop-blur-md border-none mb-6">
+    <Card className="bg-[#0a0e1f]/40 rounded-xl backdrop-blur-md border border-white/10 shadow-lg mb-6">
       <CardContent className="p-6">
         <div 
           className="flex items-center justify-between cursor-pointer" 

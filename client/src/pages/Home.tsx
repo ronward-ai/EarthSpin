@@ -104,12 +104,12 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1C3359] text-white">
-      <header className="py-4 px-6 bg-[#1C3359]/50 backdrop-blur-sm">
+    <div className="flex flex-col min-h-screen starry-sky text-white">
+      <header className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-b border-white/5">
         <div className="container mx-auto">
           <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center">
             <Globe className="mr-2 text-[#4DA8DA]" />
-            EarthSpin
+            <span className="bg-gradient-to-r from-blue-300 to-[#4DA8DA] text-transparent bg-clip-text">EarthSpin</span>
           </h1>
         </div>
       </header>
@@ -147,9 +147,9 @@ export default function Home() {
         <EducationalContent speeds={rotationSpeed} />
       </main>
 
-      <footer className="py-4 px-6 bg-[#1C3359]/50 backdrop-blur-sm">
-        <div className="container mx-auto text-sm text-center text-white/60">
-          <p>EarthSpin - Experience the movement you never realized was happening.</p>
+      <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5">
+        <div className="container mx-auto text-sm text-center text-white/70">
+          <p className="text-[#4DA8DA]/90">EarthSpin - Experience the movement you never realized was happening.</p>
           <p className="mt-2">Calculations based on Earth's radius of 6,371 km and 24-hour rotation period.</p>
         </div>
       </footer>

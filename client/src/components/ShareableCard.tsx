@@ -62,7 +62,7 @@ export default function ShareableCard({ latitude, longitude, speed, unit }: Shar
     <div className="mt-8 mb-6 flex flex-col items-center">
       <Button 
         onClick={handleShare} 
-        className="bg-[#4DA8DA] hover:bg-[#4DA8DA]/80 px-6 py-5 text-lg h-auto"
+        className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] px-6 py-5 text-lg h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
         size="lg"
       >
         {copied ? <Check className="h-5 w-5 mr-2" /> : <Share className="h-5 w-5 mr-2" />}
