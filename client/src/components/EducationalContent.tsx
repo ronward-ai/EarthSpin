@@ -35,7 +35,7 @@ export default function EducationalContent({ speeds }: EducationalContentProps) 
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-medium text-[#F2D399] mb-2">How does Earth's rotation work?</h3>
+              <h3 className="font-medium text-[#F2D399] mb-2">Earth's rotation</h3>
               <p className="text-sm leading-relaxed opacity-85">
                 Earth rotates on its axis, completing one full rotation every 24 hours. This rotation is what gives us day and night. The speed of rotation varies depending on your latitude - it's fastest at the equator (about 1,670 km/h) and slows down as you move toward the poles.
               </p>
