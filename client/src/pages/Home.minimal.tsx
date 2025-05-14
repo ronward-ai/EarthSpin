@@ -106,6 +106,30 @@ export default function Home() {
             
             {latitude !== null && (
               <div className="text-center mt-2">
+                {/* Earth visualization */}
+                <div className="relative mb-8 mt-2 h-40 w-40 mx-auto flex items-center justify-center">
+                  {/* Earth sphere */}
+                  <div className="absolute w-full h-full rounded-full overflow-hidden">
+                    <div className="w-full h-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
+                  </div>
+                  
+                  {/* Equator line */}
+                  <div className="absolute w-full h-0.5 bg-[#F2D399]/70 shadow-lg shadow-[#F2D399]/30"></div>
+                  
+                  {/* Position marker */}
+                  <div 
+                    className="absolute flex items-center justify-center"
+                    style={{ 
+                      right: '50%',
+                      top: `${((90 - latitude) / 180) * 100}%`,
+                      transform: 'translate(50%, -50%)'
+                    }}
+                  >
+                    <span className="w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping absolute"></span>
+                    <span className="w-3 h-3 bg-[#F2D399] rounded-full shadow-lg shadow-[#F2D399]/50 relative"></span>
+                  </div>
+                </div>
+                
                 <div className="text-lg text-blue-200 mb-2">At latitude {latitude.toFixed(4)}°, you are rotating at:</div>
                 <div className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
                   {formatNumber(speed)} km/h
