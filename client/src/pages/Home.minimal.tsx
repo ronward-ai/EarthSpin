@@ -184,18 +184,8 @@ export default function Home() {
         {/* Location Card */}
         <Card className="bg-[#0a0e1f]/40 backdrop-blur-md border border-white/10 shadow-xl w-full max-w-md mb-8">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-medium text-lg text-[#4DA8DA]">Your Location</h2>
-              {latitude !== null && !isLoading && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleCalculateClick}
-                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                >
-                  <RefreshCw className="h-5 w-5" />
-                </Button>
-              )}
+            <div className="mb-4">
+              <h2 className="font-medium text-lg text-[#4DA8DA] text-center">Your Location</h2>
             </div>
             
             {/* Initial state */}
@@ -248,20 +238,14 @@ export default function Home() {
             {/* Success state */}
             {latitude !== null && !isLoading && (
               <div className="py-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <MapPin className="text-[#F2D399] mr-2 h-5 w-5" />
-                    <div>
-                      <span className="text-sm opacity-75">Latitude</span>
-                      <p className="text-xl font-medium">{formatLatitude(latitude)}</p>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                  <div>
+                    <div className="text-sm opacity-75 mb-1">Latitude</div>
+                    <p className="text-xl font-medium text-blue-200">{formatLatitude(latitude)}</p>
                   </div>
-                  <div className="flex items-center">
-                    <Globe className="text-[#F2D399] mr-2 h-5 w-5" />
-                    <div>
-                      <span className="text-sm opacity-75">Longitude</span>
-                      <p className="text-xl font-medium">{formatLongitude(longitude)}</p>
-                    </div>
+                  <div>
+                    <div className="text-sm opacity-75 mb-1">Longitude</div>
+                    <p className="text-xl font-medium text-blue-200">{formatLongitude(longitude)}</p>
                   </div>
                 </div>
               </div>
