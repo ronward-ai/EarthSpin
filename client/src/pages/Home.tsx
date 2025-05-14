@@ -54,121 +54,74 @@ export default function Home() {
   };
   
   // Calculate button handler
-  const handleCalculate = () => {
-    try {
-      console.log("Calculate button clicked");
-      // Show a console log message when the button is clicked
-      window.alert("Debug: Calculate button clicked. Check console for details.");
-      
-      setIsLoading(true);
-      setHasError(false);
-      
-      if (!navigator.geolocation) {
-        console.error("Geolocation not supported");
-        setHasError(true);
-        setIsLoading(false);
-        toast({
-          title: "Geolocation not supported",
-          description: "Your browser doesn't support geolocation.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      console.log("Requesting geolocation permission...");
-      
-      // Request location from browser with more explicit options
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // Success
-          console.log("Got location:", position.coords.latitude, position.coords.longitude);
-          window.alert(`Debug: Got location: ${position.coords.latitude}, ${position.coords.longitude}`);
-          
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          setIsLoading(false);
-          saveLocation(position.coords.latitude, position.coords.longitude);
-        },
-        (error) => {
-          // Error
-          console.error("Location error:", error.code, error.message);
-          window.alert(`Debug: Location error: ${error.code} - ${error.message}`);
-          
-          setHasError(true);
-          setIsLoading(false);
-          toast({
-            title: "Location error",
-            description: `Could not access your location (${error.message}). Please enable location services.`,
-            variant: "destructive"
-          });
-        },
-        { 
-          enableHighAccuracy: true, 
-          timeout: 30000,  // Longer timeout
-          maximumAge: 0    // Always get fresh position
-        }
-      );
-    } catch (err) {
-      console.error("Unexpected error in handleCalculate:", err);
-      window.alert(`Debug: Unexpected error: ${err}`);
+  function handleCalculate() {
+    console.log("Calculate button clicked");
+    
+    setIsLoading(true);
+    setHasError(false);
+    
+    if (!navigator.geolocation) {
       setHasError(true);
       setIsLoading(false);
+      toast({
+        title: "Geolocation not supported",
+        description: "Your browser doesn't support geolocation.",
+        variant: "destructive"
+      });
+      return;
     }
-  };
+    
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        console.log("Got location");
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+        setIsLoading(false);
+        saveLocation(position.coords.latitude, position.coords.longitude);
+      },
+      function(error) {
+        console.error("Location error:", error);
+        setHasError(true);
+        setIsLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
   
   // Save location to database
-  const saveLocation = async (lat: number, lng: number) => {
-    try {
-      const response = await fetch("/api/locations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          latitude: lat,
-          longitude: lng,
-          rotationSpeedKph: speeds.kph
-        })
-      });
-      
-      if (response.ok) {
-        console.log("Location saved to database");
-      } else {
-        console.error("Failed to save location");
-      }
-    } catch (error) {
-      console.error("Error saving location:", error);
-    }
-  };
+  function saveLocation(lat: number, lng: number) {
+    fetch("/api/locations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        latitude: lat,
+        longitude: lng,
+        rotationSpeedKph: speeds.kph
+      })
+    }).catch(console.error);
+  }
   
   // Handle share button click
-  const handleShare = async () => {
+  function handleShare() {
     if (!latitude) return;
     
     const shareText = `I'm spinning at ${formatNumber(getCurrentSpeed())} ${getUnitLabel()}. Check your own Earth rotation speed at ${window.location.origin}`;
     
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "EarthSpin - Earth's Rotation Speed",
-          text: shareText,
-          url: window.location.href
-        });
-        toast({
-          title: "Shared successfully",
-          description: "Thanks for sharing!"
-        });
-      } catch (error) {
-        console.error("Share error:", error);
+      navigator.share({
+        title: "EarthSpin - Earth's Rotation Speed",
+        text: shareText,
+        url: window.location.href
+      }).catch(() => {
         handleCopy(shareText);
-      }
+      });
     } else {
       handleCopy(shareText);
     }
-  };
+  }
   
   // Copy to clipboard fallback
-  const handleCopy = (text: string) => {
+  function handleCopy(text: string) {
     navigator.clipboard.writeText(text);
     setCopied(true);
     toast({
@@ -176,7 +129,7 @@ export default function Home() {
       description: "Share text copied!"
     });
     setTimeout(() => setCopied(false), 2000);
-  };
+  }
   
   return (
     <div className="flex flex-col min-h-screen starry-sky text-white">
@@ -202,13 +155,8 @@ export default function Home() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => {
-                    console.log("Refresh button clicked");
-                    window.alert("Debug: Refresh button clicked");
-                    handleCalculate();
-                  }}
+                  onClick={handleCalculate}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                  type="button"
                 >
                   <RefreshCw className="h-5 w-5" />
                 </Button>
@@ -222,13 +170,9 @@ export default function Home() {
                   Calculate how fast you're spinning on Earth based on your location.
                 </p>
                 <Button 
-                  onClick={() => {
-                    console.log("Button clicked directly"); 
-                    handleCalculate();
-                  }}
+                  onClick={handleCalculate}
                   className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
                   size="lg"
-                  type="button"
                 >
                   Calculate My Speed
                 </Button>
@@ -257,13 +201,8 @@ export default function Home() {
                 </div>
                 <div className="mt-3 flex justify-center">
                   <Button 
-                    onClick={() => {
-                      console.log("Try Again clicked");
-                      window.alert("Debug: Try Again clicked");
-                      handleCalculate();
-                    }}
+                    onClick={handleCalculate}
                     className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
-                    type="button"
                   >
                     Try Again
                   </Button>
