@@ -39,11 +39,13 @@ export default function EarthVisualization({ latitude, longitude }: EarthVisuali
           className="absolute w-3 h-3 bg-[#F2D399] rounded-full shadow-lg shadow-[#F2D399]/50"
           style={{ 
             right: `${markerPosition.right}%`, 
-            top: `${markerPosition.top}%` 
+            top: `${markerPosition.top}%`,
+            transform: 'translate(50%, -50%)'
           }}
         >
-          <span className="absolute w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping" 
-                style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}></span>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <span className="block absolute w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping"></span>
+          </div>
         </div>
       )}
     </div>

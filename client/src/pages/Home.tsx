@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import LocationDisplay from "@/components/LocationDisplay";
 import RotationSpeedDisplay from "@/components/RotationSpeedDisplay";
 import EducationalContent from "@/components/EducationalContent";
+import ShareableCard from "@/components/ShareableCard";
 import { calculateRotationSpeed } from "@/lib/calculations";
 import { Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { Separator } from "@/components/ui/separator";
 
 type LocationState = "idle" | "loading" | "success" | "error";
 type UnitType = "kph" | "mph" | "mps";
@@ -99,6 +100,13 @@ export default function Home() {
     }
   };
 
+  // Calculate current speed based on active unit
+  const getCurrentSpeed = () => {
+    if (unit === "kph") return rotationSpeed.kph;
+    if (unit === "mph") return rotationSpeed.mph;
+    return rotationSpeed.mps;
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1C3359] text-white">
       <header className="py-4 px-6 bg-[#1C3359]/50 backdrop-blur-sm">
@@ -125,6 +133,19 @@ export default function Home() {
           latitude={latitude}
           longitude={longitude}
         />
+        
+        {locationState === "success" && (
+          <>
+            <Separator className="my-6 bg-white/20" />
+            
+            <ShareableCard
+              latitude={latitude}
+              longitude={longitude}
+              speed={getCurrentSpeed()}
+              unit={unit}
+            />
+          </>
+        )}
         
         <EducationalContent speeds={rotationSpeed} />
       </main>
