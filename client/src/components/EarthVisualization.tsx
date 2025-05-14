@@ -26,7 +26,7 @@ export default function EarthVisualization({ latitude }: EarthVisualizationProps
     <div className="relative mb-8 h-40 w-40 md:h-52 md:w-52 flex items-center justify-center">
       {/* Earth visualization */}
       <div className="absolute w-full h-full rounded-full overflow-hidden earth-rotation">
-        <div className="w-full h-full earth-map"></div>
+        <div className="w-full h-full earth-realistic"></div>
       </div>
       
       {/* Latitude indicator line */}
@@ -41,7 +41,7 @@ export default function EarthVisualization({ latitude }: EarthVisualizationProps
             top: `${markerPosition.top}%` 
           }}
         >
-          <span className="absolute w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping"></span>
+          <span className="absolute w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping -left-1 -top-1"></span>
         </div>
       )}
     </div>
