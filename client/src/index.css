@@ -63,6 +63,10 @@
   100% { opacity: 0.1; }
 }
 
+.animate-twinkle {
+  animation: twinkle 6s infinite alternate;
+}
+
 /* Make text more readable against the starry background */
 .starry-sky h1, 
 .starry-sky h2, 

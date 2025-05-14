@@ -40,8 +40,42 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen starry-sky text-white">
-      <header className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-b border-white/10">
+    <div className="flex flex-col min-h-screen text-white relative" style={{ 
+      background: 'linear-gradient(to bottom, #0a0e1f 0%, #0e1d3b 100%)'
+    }}>
+      {/* Stars background - direct implementation */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            radial-gradient(1px 1px at 25% 15%, white, transparent),
+            radial-gradient(1px 1px at 50% 40%, white, transparent),
+            radial-gradient(1px 1px at 75% 25%, white, transparent),
+            radial-gradient(1.5px 1.5px at 10% 60%, white, transparent),
+            radial-gradient(1.5px 1.5px at 30% 85%, white, transparent),
+            radial-gradient(1.5px 1.5px at 65% 70%, white, transparent),
+            radial-gradient(1px 1px at 85% 45%, white, transparent),
+            radial-gradient(1.5px 1.5px at 95% 90%, white, transparent)
+          `,
+          opacity: 0.8
+        }}
+      />
+      
+      {/* Twinkling stars - direct implementation */}
+      <div 
+        className="fixed inset-0 pointer-events-none animate-twinkle"
+        style={{
+          backgroundImage: `
+            radial-gradient(2px 2px at 30% 20%, rgba(255, 255, 255, 0.9), transparent),
+            radial-gradient(2px 2px at 60% 35%, rgba(255, 255, 255, 0.9), transparent),
+            radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.9), transparent),
+            radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.9), transparent)
+          `,
+          opacity: 0
+        }}
+      />
+
+      <header className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-b border-white/10 relative z-10">
         <h1 className="text-2xl font-bold text-center flex items-center justify-center">
           <Globe className="mr-2 text-blue-400" />
           <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
@@ -82,7 +116,7 @@ export default function Home() {
         </Card>
       </main>
 
-      <footer className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-t border-white/10">
+      <footer className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-t border-white/10 relative z-10">
         <p className="text-center text-sm text-blue-200">EarthSpin - Experience Earth's rotation based on a radius of 6,371 km and 24-hour period</p>
       </footer>
     </div>
