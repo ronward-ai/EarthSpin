@@ -31,25 +31,10 @@
     radial-gradient(1px 1px at 80% 5%, white, transparent),
     radial-gradient(1.5px 1.5px at 90% 50%, white, transparent),
     radial-gradient(1px 1px at 5% 10%, white, transparent),
-    radial-gradient(1.5px 1.5px at 20% 50%, white, transparent),
-    radial-gradient(0.5px 0.5px at 7% 30%, white, transparent),
-    radial-gradient(0.5px 0.5px at 13% 20%, white, transparent),
-    radial-gradient(0.5px 0.5px at 23% 55%, white, transparent),
-    radial-gradient(0.5px 0.5px at 37% 70%, white, transparent),
-    radial-gradient(0.5px 0.5px at 48% 25%, white, transparent),
-    radial-gradient(0.5px 0.5px at 52% 67%, white, transparent),
-    radial-gradient(0.5px 0.5px at 63% 33%, white, transparent),
-    radial-gradient(0.5px 0.5px at 72% 12%, white, transparent),
-    radial-gradient(0.5px 0.5px at 82% 36%, white, transparent),
-    radial-gradient(0.5px 0.5px at 97% 55%, white, transparent),
-    radial-gradient(0.5px 0.5px at 94% 22%, white, transparent),
-    radial-gradient(0.5px 0.5px at 57% 88%, white, transparent),
-    radial-gradient(0.5px 0.5px at 67% 78%, white, transparent),
-    radial-gradient(0.5px 0.5px at 77% 63%, white, transparent),
-    radial-gradient(0.5px 0.5px at 83% 73%, white, transparent),
-    radial-gradient(0.5px 0.5px at 26% 83%, white, transparent);
+    radial-gradient(1.5px 1.5px at 20% 50%, white, transparent);
   opacity: 0.8;
-  z-index: 0;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Add twinkling animation for a few stars */
@@ -65,16 +50,10 @@
     radial-gradient(2px 2px at 60% 35%, rgba(255, 255, 255, 0.9), transparent),
     radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.9), transparent),
     radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(2px 2px at 10% 40%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(2.5px 2.5px at 15% 15%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(2.5px 2.5px at 45% 45%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(2.5px 2.5px at 75% 75%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(2.5px 2.5px at 85% 40%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(3px 3px at 20% 65%, rgba(255, 253, 225, 0.9), transparent),
-    radial-gradient(3px 3px at 55% 25%, rgba(255, 253, 225, 0.9), transparent),
-    radial-gradient(3px 3px at 90% 85%, rgba(255, 253, 225, 0.9), transparent);
+    radial-gradient(2px 2px at 10% 40%, rgba(255, 255, 255, 0.9), transparent);
   opacity: 0;
-  z-index: 0;
+  z-index: -1;
+  pointer-events: none;
   animation: twinkle 6s infinite alternate;
 }
 
