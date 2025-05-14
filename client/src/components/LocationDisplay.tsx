@@ -76,8 +76,7 @@ export default function LocationDisplay({
             <div className="mt-3 flex justify-center">
               <Button 
                 onClick={onRefresh}
-                variant="outline"
-                className="border-[#4DA8DA] text-[#4DA8DA] hover:bg-[#4DA8DA]/10"
+                className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
               >
                 Try Again
               </Button>

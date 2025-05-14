@@ -24,7 +24,11 @@ export default function Home() {
   const [isSavingLocation, setIsSavingLocation] = useState(false);
   const { toast } = useToast();
 
-  // Removed auto-location fetching on mount
+  // Initialize app with idle state
+  useEffect(() => {
+    // Reset to idle state on component mount
+    setLocationState("idle");
+  }, []);
 
   useEffect(() => {
     if (latitude !== null) {
@@ -66,11 +70,19 @@ export default function Home() {
   };
 
   const getLocation = () => {
+    // Set loading state first
     setLocationState("loading");
+    
+    // Clear any previous location data
+    setLatitude(null);
+    setLongitude(null);
+    
+    console.log("Getting location...");
     
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log("Location retrieved:", position.coords);
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
           setLocationState("success");
@@ -84,9 +96,10 @@ export default function Home() {
           });
           setLocationState("error");
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     } else {
+      console.error("Geolocation not supported");
       toast({
         title: "Geolocation not supported",
         description: "Your browser doesn't support geolocation.",
