@@ -343,7 +343,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5">
         <div className="container mx-auto text-sm text-center text-white/70">
-          <p className="text-[#4DA8DA]/90">EarthSpin - Experience the movement you never realized was happening.</p>
+          <p className="text-[#4DA8DA]/90">EarthSpin is a project by Artist <a href="https://x.com/Ron_Ward_" target="_blank" rel="noopener noreferrer" className="text-[#F2D399] hover:text-[#F2D399]/80 transition-colors underline">Ron Ward</a></p>
           <p className="mt-2">Calculations based on Earth's radius of 6,371 km and 24-hour rotation period.</p>
         </div>
       </footer>
