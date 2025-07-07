@@ -17,6 +17,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
   
   const { toast } = useToast();
   
@@ -348,7 +349,22 @@ export default function Home() {
       </main>
 
       <footer className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-t border-white/10 relative z-10">
-        <p className="text-center text-sm text-blue-200">EarthSpin - Experience Earth's rotation based on a radius of 6,371 km and 24-hour period</p>
+        <div className="text-center text-sm text-white/70">
+          <p className="text-[#4DA8DA]/90">
+            © 2025 EarthSpin is a project by Artist{" "}
+            <button
+              onClick={() => setShowEmail(!showEmail)}
+              className="text-[#F2D399] hover:text-[#F2D399]/80 transition-colors underline cursor-pointer bg-transparent border-none p-0 font-inherit"
+            >
+              Ron Ward
+            </button>
+            {showEmail && (
+              <span className="block mt-1 text-[#F2D399]/80 text-xs">
+                ronward.creates@gmail.com
+              </span>
+            )}
+          </p>
+        </div>
       </footer>
     </div>
   );
