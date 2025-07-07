@@ -6,7 +6,6 @@ import { Globe, Share, Check, MapPin, RefreshCw, AlertCircle } from "lucide-reac
 import { calculateRotationSpeed } from "@/lib/calculations";
 import { formatNumber } from "@/lib/units";
 import { useToast } from "@/hooks/use-toast";
-import EducationalContent from "@/components/EducationalContent";
 
 // Type definitions
 type UnitType = "kph" | "mph" | "mps";
@@ -133,9 +132,29 @@ export default function Home() {
   }
   
   return (
-    <div className="flex flex-col min-h-screen starry-sky text-white">
+    <div className="flex flex-col min-h-screen text-white relative" style={{ 
+      background: 'linear-gradient(to bottom, #0a0e1f 0%, #0e1d3b 100%)'
+    }}>
+      {/* Stars background */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            radial-gradient(1px 1px at 25% 15%, white, transparent),
+            radial-gradient(1px 1px at 50% 40%, white, transparent),
+            radial-gradient(1px 1px at 75% 25%, white, transparent),
+            radial-gradient(1.5px 1.5px at 10% 60%, white, transparent),
+            radial-gradient(1.5px 1.5px at 30% 85%, white, transparent),
+            radial-gradient(1.5px 1.5px at 65% 70%, white, transparent),
+            radial-gradient(1px 1px at 85% 45%, white, transparent),
+            radial-gradient(1.5px 1.5px at 95% 90%, white, transparent)
+          `,
+          opacity: 0.8
+        }}
+      />
+      
       {/* Header */}
-      <header className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-b border-white/5">
+      <header className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-b border-white/5 relative z-10">
         <div className="container mx-auto">
           <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center">
             <Globe className="mr-2 text-[#4DA8DA]" />
@@ -146,7 +165,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-grow container mx-auto p-4 md:p-8 flex flex-col">
+      <main className="flex-grow container mx-auto p-4 md:p-8 flex flex-col relative z-10">
         {/* Location Card */}
         <Card className="bg-[#0a0e1f]/40 rounded-xl mb-6 backdrop-blur-md border border-white/10 shadow-lg">
           <CardContent className="p-4">
@@ -337,12 +356,10 @@ export default function Home() {
           </>
         )}
         
-        {/* Educational Content */}
-        <EducationalContent speeds={speeds} />
-      </main>
+        </main>
 
       {/* Footer */}
-      <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5">
+      <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5 relative z-10">
         <div className="container mx-auto text-sm text-center text-white/70">
           <p className="text-[#4DA8DA]/90">
             © 2025 EarthSpin is a project by Artist{" "}
