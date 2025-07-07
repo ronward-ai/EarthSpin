@@ -7,11 +7,9 @@ import { calculateRotationSpeed } from "@/lib/calculations";
 import { formatNumber } from "@/lib/units";
 import { useToast } from "@/hooks/use-toast";
 
-// Type definitions
 type UnitType = "kph" | "mph" | "mps";
 
 export default function Home() {
-  // State
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -19,47 +17,40 @@ export default function Home() {
   const [unit, setUnit] = useState<UnitType>("kph");
   const [copied, setCopied] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
-  
+
   const { toast } = useToast();
-  
-  // Calculate speeds based on latitude
+
   const speeds = latitude !== null 
     ? calculateRotationSpeed(latitude)
     : { kph: 0, mph: 0, mps: 0 };
-  
-  // Format latitude display
+
   const formatLatitude = (lat: number | null) => {
     if (lat === null) return "Unknown";
     return `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}`;
   };
-  
-  // Format longitude display
+
   const formatLongitude = (lng: number | null) => {
     if (lng === null) return "Unknown";
     return `${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? "E" : "W"}`;
   };
-  
-  // Get current speed in the selected unit
+
   const getCurrentSpeed = () => {
     if (unit === "kph") return speeds.kph;
     if (unit === "mph") return speeds.mph;
     return speeds.mps;
   };
-  
-  // Get unit label
+
   const getUnitLabel = () => {
     if (unit === "kph") return "km/h";
     if (unit === "mph") return "mph";
     return "m/s";
   };
-  
-  // Calculate button handler
+
   function handleCalculate() {
-    console.log("Calculate button clicked");
-    
+    console.log("Button clicked");
     setIsLoading(true);
     setHasError(false);
-    
+
     if (!navigator.geolocation) {
       setHasError(true);
       setIsLoading(false);
@@ -70,43 +61,33 @@ export default function Home() {
       });
       return;
     }
-    
+
     navigator.geolocation.getCurrentPosition(
-      function(position) {
-        console.log("Got location");
+      (position) => {
+        console.log("Got position:", position.coords.latitude);
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
         setIsLoading(false);
-        saveLocation(position.coords.latitude, position.coords.longitude);
       },
-      function(error) {
+      (error) => {
         console.error("Location error:", error);
         setHasError(true);
         setIsLoading(false);
+        toast({
+          title: "Location Error",
+          description: "Could not get your location. Please try again.",
+          variant: "destructive"
+        });
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }
-  
-  // Save location to database
-  function saveLocation(lat: number, lng: number) {
-    fetch("/api/locations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        latitude: lat,
-        longitude: lng,
-        rotationSpeedKph: speeds.kph
-      })
-    }).catch(console.error);
-  }
-  
-  // Handle share button click
+
   function handleShare() {
     if (!latitude) return;
-    
+
     const shareText = `I'm spinning at ${formatNumber(getCurrentSpeed())} ${getUnitLabel()}. Check your own Earth rotation speed at ${window.location.origin}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: "EarthSpin - Earth's Rotation Speed",
@@ -119,8 +100,7 @@ export default function Home() {
       handleCopy(shareText);
     }
   }
-  
-  // Copy to clipboard fallback
+
   function handleCopy(text: string) {
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -130,31 +110,10 @@ export default function Home() {
     });
     setTimeout(() => setCopied(false), 2000);
   }
-  
+
   return (
-    <div className="flex flex-col min-h-screen text-white relative" style={{ 
-      background: 'linear-gradient(to bottom, #0a0e1f 0%, #0e1d3b 100%)'
-    }}>
-      {/* Stars background */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            radial-gradient(1px 1px at 25% 15%, white, transparent),
-            radial-gradient(1px 1px at 50% 40%, white, transparent),
-            radial-gradient(1px 1px at 75% 25%, white, transparent),
-            radial-gradient(1.5px 1.5px at 10% 60%, white, transparent),
-            radial-gradient(1.5px 1.5px at 30% 85%, white, transparent),
-            radial-gradient(1.5px 1.5px at 65% 70%, white, transparent),
-            radial-gradient(1px 1px at 85% 45%, white, transparent),
-            radial-gradient(1.5px 1.5px at 95% 90%, white, transparent)
-          `,
-          opacity: 0.8
-        }}
-      />
-      
-      {/* Header */}
-      <header className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-b border-white/5 relative z-10">
+    <div className="flex flex-col min-h-screen text-white starry-sky">
+      <header className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-b border-white/5">
         <div className="container mx-auto">
           <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center">
             <Globe className="mr-2 text-[#4DA8DA]" />
@@ -165,8 +124,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-grow container mx-auto p-4 md:p-8 flex flex-col relative z-10">
-        {/* Location Card */}
+      <main className="flex-grow container mx-auto p-4 md:p-8 flex flex-col">
         <Card className="bg-[#0a0e1f]/40 rounded-xl mb-6 backdrop-blur-md border border-white/10 shadow-lg">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -182,8 +140,7 @@ export default function Home() {
                 </Button>
               )}
             </div>
-            
-            {/* Initial state */}
+
             {latitude === null && !isLoading && !hasError && (
               <div className="py-4 flex flex-col items-center justify-center">
                 <p className="text-sm opacity-75 mb-3">
@@ -198,16 +155,14 @@ export default function Home() {
                 </Button>
               </div>
             )}
-            
-            {/* Loading state */}
+
             {isLoading && (
               <div className="py-4 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#4DA8DA]"></div>
                 <span className="ml-3 text-sm opacity-75">Determining your location...</span>
               </div>
             )}
-            
-            {/* Error state */}
+
             {hasError && !isLoading && (
               <div className="py-4">
                 <div className="flex items-start">
@@ -229,8 +184,7 @@ export default function Home() {
                 </div>
               </div>
             )}
-            
-            {/* Success state */}
+
             {latitude !== null && !isLoading && (
               <div className="py-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -253,21 +207,17 @@ export default function Home() {
             )}
           </CardContent>
         </Card>
-        
-        {/* Earth Visualization and Speed */}
+
         <div className="flex-grow flex flex-col items-center justify-center my-4 md:my-8 relative">
           <div className="absolute w-52 h-52 md:w-72 md:h-72 bg-[#4DA8DA] opacity-5 rounded-full"></div>
-          
-          {/* Earth visualization */}
+
           <div className="relative mb-8 h-40 w-40 md:h-52 md:w-52 flex items-center justify-center">
             <div className="absolute w-full h-full rounded-full overflow-hidden">
               <div className="w-full h-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
             </div>
-            
-            {/* Equator line */}
+
             <div className="absolute w-full h-0.5 bg-[#F2D399]/70 shadow-lg shadow-[#F2D399]/30"></div>
-            
-            {/* Position marker */}
+
             {latitude !== null && (
               <div 
                 className="absolute w-5 h-5 flex items-center justify-center"
@@ -282,8 +232,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          
-          {/* Speed display */}
+
           {latitude === null ? (
             <div className="text-center mb-6 opacity-70">
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">Discover Your Rotation Speed</h2>
@@ -294,11 +243,11 @@ export default function Home() {
           ) : (
             <div className="text-center mb-6">
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
-              
+
               <div className="text-5xl md:text-7xl font-bold my-4">
                 {formatNumber(getCurrentSpeed())}
               </div>
-              
+
               <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
                 <Button
                   variant={unit === "kph" ? "default" : "ghost"}
@@ -337,12 +286,10 @@ export default function Home() {
             </div>
           )}
         </div>
-        
-        {/* Share Button */}
+
         {latitude !== null && (
           <>
             <Separator className="my-6 bg-white/20" />
-            
             <div className="mt-2 mb-6 flex flex-col items-center">
               <Button 
                 onClick={handleShare} 
@@ -355,11 +302,9 @@ export default function Home() {
             </div>
           </>
         )}
-        
-        </main>
+      </main>
 
-      {/* Footer */}
-      <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5 relative z-10">
+      <footer className="py-4 px-6 bg-[#0a0e1f]/30 backdrop-blur-sm border-t border-white/5">
         <div className="container mx-auto text-sm text-center text-white/70">
           <p className="text-[#4DA8DA]/90">
             © 2025 EarthSpin is a project by Artist{" "}
