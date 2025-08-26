@@ -30,15 +30,23 @@ export default function EducationalContent({ speeds }: EducationalContentProps) 
         </div>
         
         <div>
-          <p className="font-medium mb-2">Compared to your rotation speed:</p>
-          <ul className="space-y-1 text-blue-200 opacity-90">
-            <li>
-              The International Space Station orbits Earth at {formatNumber(27600)} km/h, which is about {formatNumber(27600/speeds.kph)} times faster than you're spinning
-            </li>
-            <li>
-              Commercial airplanes fly at around {formatNumber(900)} km/h, approximately {speeds.kph > 900 ? `${formatNumber(speeds.kph/900)}× slower than` : `${formatNumber(900/speeds.kph)}× faster than`} your rotation speed
-            </li>
-          </ul>
+          <p className="font-medium mb-2">How we calculate your rotation speed:</p>
+          <div className="text-blue-200 opacity-90 space-y-2">
+            <p className="text-xs">
+              <span className="font-medium">Step 1:</span> Find the radius at your latitude using cosine: 6,371 km × cos(latitude)
+            </p>
+            <p className="text-xs">
+              <span className="font-medium">Step 2:</span> Calculate the circumference: 2π × radius
+            </p>
+            <p className="text-xs">
+              <span className="font-medium">Step 3:</span> Divide by 24 hours to get your speed
+            </p>
+            <div className="mt-3 p-3 bg-[#4DA8DA]/10 rounded border border-[#4DA8DA]/20">
+              <p className="text-xs font-mono">
+                Speed = (2π × 6,371 km × cos(latitude)) ÷ 24 hours
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
