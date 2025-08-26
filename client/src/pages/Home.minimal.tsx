@@ -7,6 +7,7 @@ import { calculateRotationSpeed } from "@/lib/calculations";
 import { formatNumber, getUnitName } from "@/lib/units";
 import { useToast } from "@/hooks/use-toast";
 import EducationalContent from "@/components/EducationalContent";
+import { ContactForm } from "@/components/ContactForm";
 
 type UnitType = "kph" | "mph" | "mps";
 
@@ -17,46 +18,46 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
-  
+  const [showContactForm, setShowContactForm] = useState(false); // Changed state name
+
   const { toast } = useToast();
-  
+
   // Calculate speeds based on latitude
-  const speeds = latitude !== null 
+  const speeds = latitude !== null
     ? calculateRotationSpeed(latitude)
     : { kph: 0, mph: 0, mps: 0 };
-  
+
   // Format latitude display
   const formatLatitude = (lat: number | null) => {
     if (lat === null) return "Unknown";
     return `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}`;
   };
-  
+
   // Format longitude display
   const formatLongitude = (lng: number | null) => {
     if (lng === null) return "Unknown";
     return `${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? "E" : "W"}`;
   };
-  
+
   // Get current speed in the selected unit
   const getCurrentSpeed = () => {
     if (unit === "kph") return speeds.kph;
     if (unit === "mph") return speeds.mph;
     return speeds.mps;
   };
-  
+
   // Get unit label
   const getUnitLabel = () => {
     if (unit === "kph") return "km/h";
     if (unit === "mph") return "mph";
     return "m/s";
   };
-  
+
   function handleCalculateClick() {
     console.log("Button clicked");
     setIsLoading(true);
     setHasError(false);
-    
+
     if (!navigator.geolocation) {
       toast({
         title: "Error",
@@ -67,16 +68,16 @@ export default function Home() {
       setIsLoading(false);
       return;
     }
-    
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         console.log("Got position:", position.coords.latitude);
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
-        
+
         // Save location
         saveLocation(position.coords.latitude, position.coords.longitude);
-        
+
         setIsLoading(false);
       },
       (error) => {
@@ -92,7 +93,7 @@ export default function Home() {
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }
-  
+
   // Save location to database
   function saveLocation(lat: number, lng: number) {
     fetch("/api/locations", {
@@ -105,13 +106,13 @@ export default function Home() {
       })
     }).catch(console.error);
   }
-  
+
   // Handle share button click
   function handleShare() {
     if (!latitude) return;
-    
+
     const shareText = `I'm spinning at ${formatNumber(getCurrentSpeed())} ${getUnitLabel()} due to Earth's rotation! Check your own speed at ${window.location.origin}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: "EarthSpin - Earth's Rotation Speed",
@@ -124,7 +125,7 @@ export default function Home() {
       handleCopy(shareText);
     }
   }
-  
+
   // Copy to clipboard fallback
   function handleCopy(text: string) {
     navigator.clipboard.writeText(text);
@@ -137,11 +138,11 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen text-white relative" style={{ 
+    <div className="flex flex-col min-h-screen text-white relative" style={{
       background: 'linear-gradient(to bottom, #0a0e1f 0%, #0e1d3b 100%)'
     }}>
       {/* Stars background - direct implementation */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none"
         style={{
           backgroundImage: `
@@ -157,9 +158,9 @@ export default function Home() {
           opacity: 0.8
         }}
       />
-      
+
       {/* Twinkling stars - direct implementation */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none animate-twinkle"
         style={{
           backgroundImage: `
@@ -188,14 +189,14 @@ export default function Home() {
             <div className="mb-4">
               <h2 className="font-medium text-lg text-[#4DA8DA] text-center">Your Location</h2>
             </div>
-            
+
             {/* Initial state */}
             {latitude === null && !isLoading && !hasError && (
               <div className="py-4 flex flex-col items-center justify-center">
                 <p className="text-sm opacity-75 mb-3 text-center">
                   Calculate how fast you're spinning on Earth based on your location.
                 </p>
-                <Button 
+                <Button
                   onClick={handleCalculateClick}
                   className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
                   size="lg"
@@ -204,7 +205,7 @@ export default function Home() {
                 </Button>
               </div>
             )}
-            
+
             {/* Loading state */}
             {isLoading && (
               <div className="py-4 flex items-center justify-center">
@@ -212,7 +213,7 @@ export default function Home() {
                 <span className="ml-3 text-sm opacity-75">Determining your location...</span>
               </div>
             )}
-            
+
             {/* Error state */}
             {hasError && !isLoading && (
               <div className="py-4">
@@ -226,7 +227,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="mt-3 flex justify-center">
-                  <Button 
+                  <Button
                     onClick={handleCalculateClick}
                     className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
                   >
@@ -235,7 +236,7 @@ export default function Home() {
                 </div>
               </div>
             )}
-            
+
             {/* Success state */}
             {latitude !== null && !isLoading && (
               <div className="py-3">
@@ -253,7 +254,7 @@ export default function Home() {
             )}
           </CardContent>
         </Card>
-        
+
         {/* Earth Visualization and Speed */}
         {latitude !== null && !isLoading && (
           <div className="w-full max-w-md mb-8">
@@ -263,14 +264,14 @@ export default function Home() {
               <div className="absolute w-full h-full rounded-full overflow-hidden">
                 <div className="w-full h-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
               </div>
-              
+
               {/* Equator line */}
               <div className="absolute w-full h-0.5 bg-[#F2D399]/70 shadow-lg shadow-[#F2D399]/30"></div>
-              
+
               {/* Position marker */}
-              <div 
+              <div
                 className="absolute flex items-center justify-center"
-                style={{ 
+                style={{
                   right: '50%',
                   top: `${((90 - latitude) / 180) * 100}%`,
                   transform: 'translate(50%, -50%)'
@@ -280,21 +281,21 @@ export default function Home() {
                 <span className="w-3 h-3 bg-[#F2D399] rounded-full shadow-lg shadow-[#F2D399]/50 relative"></span>
               </div>
             </div>
-            
+
             {/* Speed display */}
             <div className="text-center mb-6">
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
-              
+
               <div className="text-5xl md:text-6xl font-bold my-4 bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
                 {formatNumber(getCurrentSpeed())} {getUnitLabel()}
               </div>
-              
+
               <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
                 <Button
                   variant={unit === "kph" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
-                    unit === "kph" 
-                      ? "bg-[#4DA8DA]/80 text-white" 
+                    unit === "kph"
+                      ? "bg-[#4DA8DA]/80 text-white"
                       : "text-white/70 hover:text-white"
                   }`}
                   onClick={() => setUnit("kph")}
@@ -304,8 +305,8 @@ export default function Home() {
                 <Button
                   variant={unit === "mph" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
-                    unit === "mph" 
-                      ? "bg-[#4DA8DA]/80 text-white" 
+                    unit === "mph"
+                      ? "bg-[#4DA8DA]/80 text-white"
                       : "text-white/70 hover:text-white"
                   }`}
                   onClick={() => setUnit("mph")}
@@ -315,8 +316,8 @@ export default function Home() {
                 <Button
                   variant={unit === "mps" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
-                    unit === "mps" 
-                      ? "bg-[#4DA8DA]/80 text-white" 
+                    unit === "mps"
+                      ? "bg-[#4DA8DA]/80 text-white"
                       : "text-white/70 hover:text-white"
                   }`}
                   onClick={() => setUnit("mps")}
@@ -325,13 +326,13 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            
+
             {/* Share Button */}
             <Separator className="my-6 bg-white/20" />
-            
+
             <div className="mt-2 mb-6 flex flex-col items-center">
-              <Button 
-                onClick={handleShare} 
+              <Button
+                onClick={handleShare}
                 className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] px-6 py-5 text-lg h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
                 size="lg"
               >
@@ -341,7 +342,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        
+
         {/* Educational Content */}
         {latitude !== null && !isLoading && (
           <EducationalContent speeds={speeds} />
@@ -353,15 +354,15 @@ export default function Home() {
           <p className="text-[#4DA8DA]/90">
             © 2025 EarthSpin is a project by Artist{" "}
             <button
-              onClick={() => setShowEmail(!showEmail)}
+              onClick={() => setShowContactForm(!showContactForm)} // Changed handler
               className="text-[#F2D399] hover:text-[#F2D399]/80 transition-colors underline cursor-pointer bg-transparent border-none p-0 font-inherit"
             >
               Ron Ward
             </button>
-            {showEmail && (
-              <span className="block mt-1 text-[#F2D399]/80 text-xs">
-                ronward.creates@gmail.com
-              </span>
+            {showContactForm && (
+              <div className="mt-2"> {/* Wrapper for the contact form */}
+                <ContactForm />
+              </div>
             )}
           </p>
         </div>

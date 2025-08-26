@@ -4,10 +4,47 @@ import { storage } from "./storage";
 import { insertLocationSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Contact form schema
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Valid email is required"),
+  message: z.string().min(1, "Message is required")
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint
   app.get("/api/health", (req, res) => {
     res.json({ status: "healthy" });
+  });
+
+  // Contact form endpoint
+  app.post("/api/contact", async (req, res) => {
+    try {
+      // Validate request body
+      const validatedData = contactFormSchema.parse(req.body);
+      
+      // In a real app, you'd send an email here
+      // For now, we'll just log it and return success
+      console.log("Contact form submission:", {
+        name: validatedData.name,
+        email: validatedData.email,
+        message: validatedData.message,
+        timestamp: new Date().toISOString()
+      });
+      
+      res.status(200).json({ message: "Contact form submitted successfully" });
+    } catch (error) {
+      console.error("Error processing contact form:", error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid form data",
+          errors: error.errors 
+        });
+      }
+      
+      res.status(500).json({ message: "Error processing contact form" });
+    }
   });
 
   // Location endpoints
