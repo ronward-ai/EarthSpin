@@ -18,7 +18,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false); // Changed state name
+  
 
   const { toast } = useToast();
 
@@ -351,20 +351,14 @@ export default function Home() {
 
       <footer className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-t border-white/10 relative z-10">
         <div className="text-center text-sm text-white/70">
-          <p className="text-[#4DA8DA]/90">
+          <div className="text-[#4DA8DA]/90">
             © 2025 EarthSpin is a project by Artist{" "}
-            <button
-              onClick={() => setShowContactForm(!showContactForm)} // Changed handler
-              className="text-[#F2D399] hover:text-[#F2D399]/80 transition-colors underline cursor-pointer bg-transparent border-none p-0 font-inherit"
-            >
-              Ron Ward
-            </button>
-            {showContactForm && (
-              <div className="mt-2"> {/* Wrapper for the contact form */}
-                <ContactForm />
-              </div>
-            )}
-          </p>
+            <ContactForm>
+              <button className="text-[#F2D399] hover:text-[#F2D399]/80 transition-colors underline cursor-pointer bg-transparent border-none p-0 font-inherit">
+                Ron Ward
+              </button>
+            </ContactForm>
+          </div>
         </div>
       </footer>
     </div>
