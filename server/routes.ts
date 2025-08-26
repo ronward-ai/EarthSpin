@@ -3,6 +3,10 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertLocationSchema } from "@shared/schema";
 import { z } from "zod";
+import { Resend } from "resend";
+
+// Initialize Resend client
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Contact form schema
 const contactFormSchema = z.object({
@@ -23,16 +27,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate request body
       const validatedData = contactFormSchema.parse(req.body);
       
-      // In a real app, you'd send an email here
-      // For now, we'll just log it and return success
-      console.log("Contact form submission:", {
-        name: validatedData.name,
-        email: validatedData.email,
-        message: validatedData.message,
-        timestamp: new Date().toISOString()
+      // Send email using Resend
+      if (!process.env.RESEND_API_KEY) {
+        console.error("RESEND_API_KEY is not set");
+        return res.status(500).json({ message: "Email service not configured" });
+      }
+
+      if (!process.env.CONTACT_EMAIL) {
+        console.error("CONTACT_EMAIL is not set");
+        return res.status(500).json({ message: "Contact email not configured" });
+      }
+
+      await resend.emails.send({
+        from: 'EarthSpin Contact Form <onboarding@resend.dev>',
+        to: [process.env.CONTACT_EMAIL],
+        subject: `EarthSpin Contact: Message from ${validatedData.name}`,
+        html: `
+          <h3>New Contact Form Submission</h3>
+          <p><strong>Name:</strong> ${validatedData.name}</p>
+          <p><strong>Email:</strong> ${validatedData.email}</p>
+          <p><strong>Message:</strong></p>
+          <p>${validatedData.message.replace(/\n/g, '<br>')}</p>
+          <hr>
+          <p><small>Sent at: ${new Date().toISOString()}</small></p>
+        `,
+        replyTo: validatedData.email
       });
       
-      res.status(200).json({ message: "Contact form submitted successfully" });
+      console.log("Contact form email sent successfully");
+      res.status(200).json({ message: "Message sent successfully!" });
     } catch (error) {
       console.error("Error processing contact form:", error);
       
@@ -43,7 +66,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      res.status(500).json({ message: "Error processing contact form" });
+      res.status(500).json({ message: "Failed to send message. Please try again." });
     }
   });
 
