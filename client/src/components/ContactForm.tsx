@@ -70,7 +70,7 @@ export function ContactForm({ children }: ContactFormProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-[#0a0e1f]/95 backdrop-blur-sm border-[#4DA8DA]/20">
         <DialogHeader>
-          <DialogTitle className="text-[#4DA8DA]">Contact Ron Ward</DialogTitle>
+          <DialogTitle className="text-[#4DA8DA]">Contact</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

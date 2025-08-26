@@ -353,9 +353,10 @@ export default function Home() {
         <div className="text-center text-sm text-white/70">
           <div className="text-[#4DA8DA]/90">
             © 2025 EarthSpin is a project by Artist{" "}
+            <span className="text-[#F2D399]">Ron Ward</span> •{" "}
             <ContactForm>
-              <button className="text-[#F2D399] hover:text-[#F2D399]/80 transition-colors underline cursor-pointer bg-transparent border-none p-0 font-inherit">
-                Ron Ward
+              <button className="text-[#4DA8DA] hover:text-[#4DA8DA]/80 transition-colors underline cursor-pointer bg-transparent border-none p-0 font-inherit">
+                contact
               </button>
             </ContactForm>
           </div>
