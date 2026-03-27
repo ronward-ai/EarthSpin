@@ -82,6 +82,17 @@
   background-size: 100% 100%;
 }
 
+/* Stars drift right→left to simulate the sky rotating as Earth spins */
+@keyframes star-drift-slow {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100vw); }
+}
+
+@keyframes star-drift-fast {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100vw); }
+}
+
 @keyframes rotateEarth {
   from {
     transform: rotate(0deg);

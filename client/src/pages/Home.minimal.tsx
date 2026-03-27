@@ -142,35 +142,74 @@ export default function Home() {
     <div className="flex flex-col min-h-screen text-white relative" style={{
       background: 'linear-gradient(to bottom, #0a0e1f 0%, #0e1d3b 100%)'
     }}>
-      {/* Stars background - direct implementation */}
+      {/*
+        Stars — two layers, each 200vw wide with stars mirrored in both halves.
+        Sliding right→left by 100vw completes one seamless loop.
+        Layer 1 (tiny, 120s) simulates distant stars; Layer 2 (slightly larger, 80s)
+        simulates closer stars — the speed difference gives a subtle parallax.
+      */}
+
+      {/* Layer 1: small distant stars, slow drift */}
       <div
-        className="fixed inset-0 pointer-events-none"
+        className="fixed top-0 left-0 h-full pointer-events-none"
         style={{
+          width: '200vw',
+          animation: 'star-drift-slow 120s linear infinite',
           backgroundImage: `
-            radial-gradient(1px 1px at 25% 15%, white, transparent),
-            radial-gradient(1px 1px at 50% 40%, white, transparent),
-            radial-gradient(1px 1px at 75% 25%, white, transparent),
-            radial-gradient(1.5px 1.5px at 10% 60%, white, transparent),
-            radial-gradient(1.5px 1.5px at 30% 85%, white, transparent),
-            radial-gradient(1.5px 1.5px at 65% 70%, white, transparent),
-            radial-gradient(1px 1px at 85% 45%, white, transparent),
-            radial-gradient(1.5px 1.5px at 95% 90%, white, transparent)
+            radial-gradient(1px 1px at  3%  12%, white, transparent),
+            radial-gradient(1px 1px at  7%  65%, white, transparent),
+            radial-gradient(1px 1px at 12%  35%, white, transparent),
+            radial-gradient(1px 1px at 18%  80%, white, transparent),
+            radial-gradient(1px 1px at 23%  18%, white, transparent),
+            radial-gradient(1px 1px at 29%  52%, white, transparent),
+            radial-gradient(1px 1px at 34%  88%, white, transparent),
+            radial-gradient(1px 1px at 40%  28%, white, transparent),
+            radial-gradient(1px 1px at 45%  72%, white, transparent),
+            radial-gradient(1px 1px at  2%  45%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 16%  92%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 37%   6%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 53%  12%, white, transparent),
+            radial-gradient(1px 1px at 57%  65%, white, transparent),
+            radial-gradient(1px 1px at 62%  35%, white, transparent),
+            radial-gradient(1px 1px at 68%  80%, white, transparent),
+            radial-gradient(1px 1px at 73%  18%, white, transparent),
+            radial-gradient(1px 1px at 79%  52%, white, transparent),
+            radial-gradient(1px 1px at 84%  88%, white, transparent),
+            radial-gradient(1px 1px at 90%  28%, white, transparent),
+            radial-gradient(1px 1px at 95%  72%, white, transparent),
+            radial-gradient(1px 1px at 52%  45%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 66%  92%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 87%   6%, rgba(255,255,255,0.6), transparent)
           `,
           opacity: 0.8
         }}
       />
 
-      {/* Twinkling stars - direct implementation */}
+      {/* Layer 2: slightly larger stars, faster drift — creates parallax depth */}
       <div
-        className="fixed inset-0 pointer-events-none animate-twinkle"
+        className="fixed top-0 left-0 h-full pointer-events-none"
         style={{
+          width: '200vw',
+          animation: 'star-drift-fast 80s linear infinite',
           backgroundImage: `
-            radial-gradient(2px 2px at 30% 20%, rgba(255, 255, 255, 0.9), transparent),
-            radial-gradient(2px 2px at 60% 35%, rgba(255, 255, 255, 0.9), transparent),
-            radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.9), transparent),
-            radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.9), transparent)
+            radial-gradient(1.5px 1.5px at  5%  30%, white, transparent),
+            radial-gradient(1.5px 1.5px at 15%   8%, white, transparent),
+            radial-gradient(1.5px 1.5px at 26%  55%, white, transparent),
+            radial-gradient(1.5px 1.5px at 35%  82%, white, transparent),
+            radial-gradient(1.5px 1.5px at 43%  22%, white, transparent),
+            radial-gradient(2px   2px   at 10%  70%, rgba(255,255,255,0.9), transparent),
+            radial-gradient(2px   2px   at 32%  42%, rgba(255,255,255,0.9), transparent),
+            radial-gradient(2px   2px   at 48%  15%, rgba(255,255,255,0.9), transparent),
+            radial-gradient(1.5px 1.5px at 55%  30%, white, transparent),
+            radial-gradient(1.5px 1.5px at 65%   8%, white, transparent),
+            radial-gradient(1.5px 1.5px at 76%  55%, white, transparent),
+            radial-gradient(1.5px 1.5px at 85%  82%, white, transparent),
+            radial-gradient(1.5px 1.5px at 93%  22%, white, transparent),
+            radial-gradient(2px   2px   at 60%  70%, rgba(255,255,255,0.9), transparent),
+            radial-gradient(2px   2px   at 82%  42%, rgba(255,255,255,0.9), transparent),
+            radial-gradient(2px   2px   at 98%  15%, rgba(255,255,255,0.9), transparent)
           `,
-          opacity: 0
+          opacity: 0.85
         }}
       />
 
