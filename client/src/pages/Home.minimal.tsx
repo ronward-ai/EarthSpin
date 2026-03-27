@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Globe, Share, Check, AlertCircle } from "lucide-react";
+import { Share, Check, AlertCircle } from "lucide-react";
 import EarthGlobe from "@/components/EarthGlobe";
 import { calculateRotationSpeed } from "@/lib/calculations";
 import { formatNumber, getUnitName } from "@/lib/units";
@@ -213,13 +213,64 @@ export default function Home() {
         }}
       />
 
-      <header className="p-4 bg-[#0a0e1f]/60 backdrop-blur-sm border-b border-white/10 relative z-10">
-        <h1 className="text-2xl font-bold text-center flex items-center justify-center">
-          <Globe className="mr-2 text-blue-400" />
-          <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
-            EarthSpin
-          </span>
-        </h1>
+      <header className="py-5 px-4 bg-[#0a0e1f]/70 backdrop-blur-md border-b border-white/10 relative z-10">
+        <div className="flex flex-col items-center gap-2">
+
+          {/* Custom globe SVG logo */}
+          <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="hdr-earth" cx="38%" cy="32%" r="65%">
+                <stop offset="0%"   stopColor="#2d8abf" />
+                <stop offset="100%" stopColor="#071525" />
+              </radialGradient>
+              <radialGradient id="hdr-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="60%"  stopColor="transparent" />
+                <stop offset="100%" stopColor="rgba(77,168,218,0.35)" />
+              </radialGradient>
+            </defs>
+            {/* Earth fill */}
+            <circle cx="27" cy="27" r="19" fill="url(#hdr-earth)" />
+            {/* Latitude lines */}
+            <ellipse cx="27" cy="27" rx="19" ry="6.5" fill="none" stroke="rgba(77,168,218,0.45)" strokeWidth="0.8" />
+            <ellipse cx="27" cy="20" rx="15"  ry="4.5"  fill="none" stroke="rgba(77,168,218,0.25)" strokeWidth="0.7" />
+            <ellipse cx="27" cy="34" rx="15"  ry="4.5"  fill="none" stroke="rgba(77,168,218,0.25)" strokeWidth="0.7" />
+            {/* Meridian lines */}
+            <ellipse cx="27" cy="27" rx="9"  ry="19" fill="none" stroke="rgba(77,168,218,0.35)" strokeWidth="0.8" />
+            <ellipse cx="27" cy="27" rx="19" ry="19" fill="none" stroke="rgba(77,168,218,0.15)" strokeWidth="0.7" />
+            {/* Atmosphere edge glow */}
+            <circle cx="27" cy="27" r="19" fill="url(#hdr-glow)" />
+            <circle cx="27" cy="27" r="19" fill="none" stroke="rgba(120,190,255,0.5)" strokeWidth="2" />
+            {/* Orbital ring */}
+            <ellipse cx="27" cy="27" rx="26" ry="9" fill="none"
+              stroke="rgba(77,168,218,0.55)" strokeWidth="1.2"
+              strokeDasharray="3.5 2.5"
+              transform="rotate(-28 27 27)" />
+            {/* Satellite dot on ring */}
+            <circle cx="50.5" cy="21.5" r="2.2" fill="#F2D399" opacity="0.95" />
+            <circle cx="50.5" cy="21.5" r="4"   fill="rgba(242,211,153,0.2)" />
+          </svg>
+
+          {/* Title */}
+          <h1
+            className="text-3xl tracking-[0.25em] text-transparent bg-clip-text select-none"
+            style={{
+              fontFamily: "'Orbitron', sans-serif",
+              fontWeight: 900,
+              backgroundImage: 'linear-gradient(90deg, #93c5fd 0%, #60a5fa 40%, #bfdbfe 70%, #60a5fa 100%)',
+              letterSpacing: '0.25em',
+            }}
+          >
+            EARTHSPIN
+          </h1>
+
+          {/* Tagline */}
+          <p
+            className="text-[10px] uppercase tracking-[0.3em] text-blue-300/50"
+            style={{ letterSpacing: '0.3em' }}
+          >
+            Discover your place in Earth's rotation
+          </p>
+        </div>
       </header>
 
       <main className="flex-grow container mx-auto p-4 flex flex-col items-center justify-center relative z-10">
