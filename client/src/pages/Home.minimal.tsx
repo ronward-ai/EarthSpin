@@ -15,7 +15,7 @@ type UnitType = "kph" | "mph" | "mps";
 export default function Home() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [unit, setUnit] = useState<UnitType>("kph");
+  const [unit, setUnit] = useState<UnitType>("mps");
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
