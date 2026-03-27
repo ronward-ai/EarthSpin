@@ -263,13 +263,7 @@ export default function Home() {
             EARTHSPIN
           </h1>
 
-          {/* Tagline */}
-          <p
-            className="text-[10px] uppercase tracking-[0.3em] text-blue-300/50"
-            style={{ letterSpacing: '0.3em' }}
-          >
-            Discover your place in Earth's rotation
-          </p>
+
         </div>
       </header>
 
