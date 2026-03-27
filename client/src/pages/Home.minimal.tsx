@@ -261,7 +261,7 @@ export default function Home() {
           <div className="w-full max-w-md mb-8">
             {/* Earth visualization */}
             <div className="mb-8 mt-2">
-              <EarthGlobe latitude={latitude} longitude={longitude ?? 0} size={180} />
+              <EarthGlobe latitude={latitude} longitude={longitude ?? 0} size={220} />
             </div>
 
             {/* Speed display */}
