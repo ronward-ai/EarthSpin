@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Globe, Share, Check, MapPin, RefreshCw, AlertCircle } from "lucide-react";
+import { Globe, Share, Check, AlertCircle } from "lucide-react";
+import EarthGlobe from "@/components/EarthGlobe";
 import { calculateRotationSpeed } from "@/lib/calculations";
 import { formatNumber, getUnitName } from "@/lib/units";
 import { useToast } from "@/hooks/use-toast";
@@ -259,27 +260,8 @@ export default function Home() {
         {latitude !== null && !isLoading && (
           <div className="w-full max-w-md mb-8">
             {/* Earth visualization */}
-            <div className="relative mb-8 mt-2 h-40 w-40 mx-auto flex items-center justify-center">
-              {/* Earth sphere */}
-              <div className="absolute w-full h-full rounded-full overflow-hidden">
-                <div className="w-full h-full bg-gradient-to-b from-[#1C3359] to-[#0A1128] shadow-lg"></div>
-              </div>
-
-              {/* Equator line */}
-              <div className="absolute w-full h-0.5 bg-[#F2D399]/70 shadow-lg shadow-[#F2D399]/30"></div>
-
-              {/* Position marker */}
-              <div
-                className="absolute flex items-center justify-center"
-                style={{
-                  right: '50%',
-                  top: `${((90 - latitude) / 180) * 100}%`,
-                  transform: 'translate(50%, -50%)'
-                }}
-              >
-                <span className="w-5 h-5 bg-[#F2D399]/30 rounded-full animate-ping absolute"></span>
-                <span className="w-3 h-3 bg-[#F2D399] rounded-full shadow-lg shadow-[#F2D399]/50 relative"></span>
-              </div>
+            <div className="mb-8 mt-2">
+              <EarthGlobe latitude={latitude} longitude={longitude ?? 0} size={180} />
             </div>
 
             {/* Speed display */}
