@@ -54,6 +54,13 @@ export default function Home() {
     return "m/s";
   };
 
+  // Get full unit name for accessibility/clarity
+  const getUnitFullName = () => {
+    if (unit === "kph") return "kilometres per hour";
+    if (unit === "mph") return "miles per hour";
+    return "metres per second";
+  };
+
   function handleCalculateClick() {
     console.log("Button clicked");
     setIsLoading(true);
@@ -344,6 +351,9 @@ export default function Home() {
               <div className="text-5xl md:text-6xl font-bold my-4 bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
                 {formatNumber(getCurrentSpeed())} {getUnitLabel()}
               </div>
+              <p className="text-[11px] uppercase tracking-widest text-white/30 -mt-2 mb-2">
+                {getUnitFullName()}
+              </p>
 
               <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
                 <Button
