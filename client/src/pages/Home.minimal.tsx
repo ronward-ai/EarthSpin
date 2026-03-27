@@ -54,12 +54,6 @@ export default function Home() {
     return "m/s";
   };
 
-  // Get full unit name for accessibility/clarity
-  const getUnitFullName = () => {
-    if (unit === "kph") return "kilometres per hour";
-    if (unit === "mph") return "miles per hour";
-    return "metres per second";
-  };
 
   function handleCalculateClick() {
     console.log("Button clicked");
@@ -348,12 +342,21 @@ export default function Home() {
             <div className="text-center mb-6">
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
 
-              <div className="text-5xl md:text-6xl font-bold my-4 bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
-                {formatNumber(getCurrentSpeed())} {getUnitLabel()}
+              <div className="flex items-center justify-center gap-3 my-4">
+                <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
+                  {formatNumber(getCurrentSpeed())}
+                </span>
+                {unit === "mps" ? (
+                  <span className="inline-flex flex-col text-left leading-tight font-bold">
+                    <span className="text-lg md:text-xl bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">metres</span>
+                    <span className="text-lg md:text-xl bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">per second</span>
+                  </span>
+                ) : (
+                  <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
+                    {getUnitLabel()}
+                  </span>
+                )}
               </div>
-              <p className="text-[11px] uppercase tracking-widest text-white/30 -mt-2 mb-2">
-                {getUnitFullName()}
-              </p>
 
               <div className="inline-flex bg-[#1C3359]/30 backdrop-blur-sm rounded-full p-1 mb-4">
                 <Button
