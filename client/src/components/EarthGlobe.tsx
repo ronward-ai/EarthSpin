@@ -11,6 +11,7 @@ const EARTH_IMAGE_URL =
 
 export default function EarthGlobe({ latitude, longitude, size = 180 }: EarthGlobeProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   // Display the Earth image at 3× zoom so roughly 1/3 of the globe is visible
   // Equirectangular maps are 2:1 (width:height)
@@ -40,29 +41,30 @@ export default function EarthGlobe({ latitude, longitude, size = 180 }: EarthGlo
           "0 0 0 2px rgba(77,168,218,0.35), 0 0 30px rgba(77,168,218,0.25), 0 0 60px rgba(10,14,31,0.8)",
       }}
     >
-      {/* Fallback gradient shown while the image loads */}
+      {/* Fallback gradient shown while the image loads or if it fails */}
       <div
         className="absolute inset-0"
         style={{
           background: "linear-gradient(to bottom, #1C3359 0%, #0A1128 100%)",
           transition: "opacity 0.5s ease",
-          opacity: imageLoaded ? 0 : 1,
+          opacity: imageLoaded && !imageError ? 0 : 1,
         }}
       />
 
-      {/* Realistic Earth texture */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${EARTH_IMAGE_URL})`,
-          backgroundSize: `${imgW}px ${imgH}px`,
-          backgroundPosition: `${bgPosX}px ${bgPosY}px`,
-          // repeat-x so the antimeridian doesn't show a hard edge
-          backgroundRepeat: "repeat-x",
-          opacity: imageLoaded ? 1 : 0,
-          transition: "opacity 0.6s ease",
-        }}
-      />
+      {/* Realistic Earth texture — hidden on error so fallback gradient stays visible */}
+      {!imageError && (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${EARTH_IMAGE_URL})`,
+            backgroundSize: `${imgW}px ${imgH}px`,
+            backgroundPosition: `${bgPosX}px ${bgPosY}px`,
+            backgroundRepeat: "repeat-x",
+            opacity: imageLoaded ? 1 : 0,
+            transition: "opacity 0.6s ease",
+          }}
+        />
+      )}
 
       {/* Atmosphere / edge vignette overlay */}
       <div
@@ -84,12 +86,13 @@ export default function EarthGlobe({ latitude, longitude, size = 180 }: EarthGlo
         />
       </div>
 
-      {/* Hidden img element used only to detect when the texture has finished loading */}
+      {/* Hidden img element used only to detect when the texture has finished loading or fails */}
       <img
         src={EARTH_IMAGE_URL}
         alt=""
         className="hidden"
         onLoad={() => setImageLoaded(true)}
+        onError={() => setImageError(true)}
       />
     </div>
   );
