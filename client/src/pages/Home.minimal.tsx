@@ -347,10 +347,10 @@ export default function Home() {
                   {formatNumber(getCurrentSpeed())}
                 </span>
                 {unit === "mps" ? (
-                  <span className="inline-flex flex-col text-left leading-tight font-bold">
-                    <span className="text-lg md:text-xl bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">metres</span>
-                    <span className="text-lg md:text-xl bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">per</span>
-                    <span className="text-lg md:text-xl bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">second</span>
+                  <span className="inline-flex flex-col text-left font-bold" style={{ lineHeight: 1 }}>
+                    <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text text-base md:text-xl">metres</span>
+                    <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text text-base md:text-xl">per</span>
+                    <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text text-base md:text-xl">second</span>
                   </span>
                 ) : (
                   <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
