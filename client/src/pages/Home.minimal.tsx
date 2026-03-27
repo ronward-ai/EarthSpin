@@ -269,22 +269,18 @@ export default function Home() {
 
       <main className="flex-grow container mx-auto p-4 flex flex-col items-center justify-center relative z-10">
         {/* Location Card */}
-        <Card className="bg-[#0a0e1f]/40 backdrop-blur-md border border-white/10 shadow-xl w-full max-w-md mb-8">
-          <CardContent className="p-6">
-            <div className="mb-4">
-              <h2 className="font-medium text-lg text-[#4DA8DA] text-center">Your Location</h2>
-            </div>
+        <Card className="bg-[#0a0e1f]/40 backdrop-blur-md border border-white/10 shadow-xl w-full max-w-md mb-5">
+          <CardContent className="p-3">
 
             {/* Initial state */}
             {latitude === null && !isLoading && !hasError && (
-              <div className="py-4 flex flex-col items-center justify-center">
-                <p className="text-sm opacity-75 mb-3 text-center">
-                  Calculate how fast you're spinning on Earth based on your location.
+              <div className="py-2 flex flex-col items-center gap-2">
+                <p className="text-xs opacity-60 text-center">
+                  Find out how fast you're spinning on Earth
                 </p>
                 <Button
                   onClick={handleCalculateClick}
-                  className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 py-5 h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
-                  size="lg"
+                  className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white px-6 border border-blue-400/30 shadow-lg shadow-blue-500/20"
                 >
                   Calculate My Speed
                 </Button>
@@ -293,47 +289,40 @@ export default function Home() {
 
             {/* Loading state */}
             {isLoading && (
-              <div className="py-4 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#4DA8DA]"></div>
-                <span className="ml-3 text-sm opacity-75">Determining your location...</span>
+              <div className="py-2 flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#4DA8DA]"></div>
+                <span className="text-xs opacity-60">Determining your location…</span>
               </div>
             )}
 
             {/* Error state */}
             {hasError && !isLoading && (
-              <div className="py-4">
-                <div className="flex items-start">
-                  <AlertCircle className="mr-2 h-5 w-5 flex-shrink-0 text-[#E63946]" />
-                  <div>
-                    <p className="font-medium text-[#E63946]">Location access denied</p>
-                    <p className="text-sm opacity-85">
-                      Please enable location services to see your Earth rotation speed.
-                    </p>
-                  </div>
+              <div className="py-1 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0 text-[#E63946]" />
+                  <p className="text-xs text-[#E63946] truncate">Location access denied</p>
                 </div>
-                <div className="mt-3 flex justify-center">
-                  <Button
-                    onClick={handleCalculateClick}
-                    className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 shadow-lg shadow-blue-500/20"
-                  >
-                    Try Again
-                  </Button>
-                </div>
+                <Button
+                  onClick={handleCalculateClick}
+                  size="sm"
+                  className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] text-white border border-blue-400/30 flex-shrink-0"
+                >
+                  Try Again
+                </Button>
               </div>
             )}
 
-            {/* Success state */}
+            {/* Success state — compact single row */}
             {latitude !== null && !isLoading && (
-              <div className="py-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
-                  <div>
-                    <div className="text-sm opacity-75 mb-1">Latitude</div>
-                    <p className="text-xl font-medium text-blue-200">{formatLatitude(latitude)}</p>
-                  </div>
-                  <div>
-                    <div className="text-sm opacity-75 mb-1">Longitude</div>
-                    <p className="text-xl font-medium text-blue-200">{formatLongitude(longitude)}</p>
-                  </div>
+              <div className="flex items-center justify-center gap-6 py-1">
+                <div className="text-center">
+                  <div className="text-[10px] uppercase tracking-wider opacity-50 mb-0.5">Latitude</div>
+                  <p className="text-sm font-medium text-blue-200">{formatLatitude(latitude)}</p>
+                </div>
+                <div className="w-px h-6 bg-white/15" />
+                <div className="text-center">
+                  <div className="text-[10px] uppercase tracking-wider opacity-50 mb-0.5">Longitude</div>
+                  <p className="text-sm font-medium text-blue-200">{formatLongitude(longitude)}</p>
                 </div>
               </div>
             )}
