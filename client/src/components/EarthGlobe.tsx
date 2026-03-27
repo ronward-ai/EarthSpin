@@ -11,9 +11,10 @@ interface EarthGlobeProps {
 }
 
 export default function EarthGlobe({ latitude, longitude, size = 220 }: EarthGlobeProps) {
-  // Rotating the orthographic projection so [longitude, latitude] faces the viewer
-  // means the user's location always appears at the dead centre of the globe.
-  const rotation: [number, number, number] = [-longitude, -latitude, 0];
+  // Only rotate horizontally so the user's longitude faces the viewer.
+  // Leaving the vertical tilt at 0 keeps the equator fixed at mid-height,
+  // while the marker appears at the correct latitude position above/below it.
+  const rotation: [number, number, number] = [-longitude, 0, 0];
 
   return (
     <div
