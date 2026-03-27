@@ -72,6 +72,28 @@ export default function EarthGlobe({ latitude, longitude, size = 220 }: EarthGlo
           strokeWidth={4}
         />
 
+        {/* Rotation direction arrow — Earth spins west→east (left→right) */}
+        <defs>
+          <marker
+            id="spin-dir-arrow"
+            markerWidth={7}
+            markerHeight={6}
+            refX={7}
+            refY={3}
+            orient="auto"
+          >
+            <path d="M 0 0 L 7 3 L 0 6 Z" fill="rgba(77,168,218,0.65)" />
+          </marker>
+        </defs>
+        {/* Quadratic bezier: left side → curves under equator → right side */}
+        <path
+          d={`M ${size * 0.15} ${size / 2 + 14} Q ${size / 2} ${size / 2 + 36} ${size * 0.85} ${size / 2 + 14}`}
+          fill="none"
+          stroke="rgba(77,168,218,0.5)"
+          strokeWidth={1.5}
+          markerEnd="url(#spin-dir-arrow)"
+        />
+
         {/* User location marker — always at globe centre due to projection rotation */}
         <Marker coordinates={[longitude, latitude]}>
           {/* Outer pulsing ring — transform-box ensures scale origin is the circle centre */}
