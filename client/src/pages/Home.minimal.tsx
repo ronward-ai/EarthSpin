@@ -342,18 +342,18 @@ export default function Home() {
             <div className="text-center mb-6">
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
 
-              <div className="flex items-center justify-center gap-3 my-4">
-                <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
+              <div className="flex items-stretch justify-center gap-3 my-4">
+                <span className="text-5xl md:text-6xl font-bold leading-none bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
                   {formatNumber(getCurrentSpeed())}
                 </span>
                 {unit === "mps" ? (
-                  <span className="inline-flex flex-col text-left font-bold" style={{ lineHeight: 1 }}>
-                    <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text text-base md:text-xl">metres</span>
-                    <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text text-base md:text-xl">per</span>
-                    <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text text-base md:text-xl">second</span>
+                  <span className="flex flex-col justify-between text-left font-bold">
+                    <span className="leading-none text-sm md:text-base bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">metres</span>
+                    <span className="leading-none text-sm md:text-base bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">per</span>
+                    <span className="leading-none text-sm md:text-base bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">second</span>
                   </span>
                 ) : (
-                  <span className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
+                  <span className="text-5xl md:text-6xl font-bold leading-none bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
                     {getUnitLabel()}
                   </span>
                 )}
