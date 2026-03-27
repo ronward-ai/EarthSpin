@@ -343,17 +343,27 @@ export default function Home() {
               <h2 className="font-medium text-xl md:text-2xl mb-2 text-[#F2D399]">You are spinning at</h2>
 
               <div className="flex items-stretch justify-center gap-3 my-4">
-                <span className="text-5xl md:text-6xl font-bold leading-none bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
+                <span
+                  className="font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text"
+                  style={{ fontSize: '3rem', lineHeight: 1 }}
+                >
                   {formatNumber(getCurrentSpeed())}
                 </span>
                 {unit === "mps" ? (
-                  <span className="flex flex-col justify-between text-left font-bold">
-                    <span className="leading-none text-sm md:text-base bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">metres</span>
-                    <span className="leading-none text-sm md:text-base bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">per</span>
-                    <span className="leading-none text-sm md:text-base bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">second</span>
+                  <span className="flex flex-col justify-between font-bold" style={{ lineHeight: 1 }}>
+                    {['metres', 'per', 'second'].map(w => (
+                      <span
+                        key={w}
+                        className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text"
+                        style={{ fontSize: '1rem', lineHeight: 1 }}
+                      >{w}</span>
+                    ))}
                   </span>
                 ) : (
-                  <span className="text-5xl md:text-6xl font-bold leading-none bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">
+                  <span
+                    className="font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text"
+                    style={{ fontSize: '3rem', lineHeight: 1 }}
+                  >
                     {getUnitLabel()}
                   </span>
                 )}
