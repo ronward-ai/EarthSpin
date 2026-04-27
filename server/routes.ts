@@ -28,7 +28,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!resend) {
         console.error("Resend client not initialized - missing API key");
         return res.status(500).json({ message: "Email service not configured" });
-      });
+      };
       
       // Send email using Resend
       if (!process.env.RESEND_API_KEY) {
