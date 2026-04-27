@@ -6,8 +6,9 @@ import { z } from "zod";
 import { Resend } from "resend";
 
 // Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+const resend = process.env.RESEND_API_KEY 
+  ? new Resend(process.env.RESEND_API_KEY) 
+  : null;
 // Contact form schema
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -24,8 +25,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     try {
-      // Validate request body
-      const validatedData = contactFormSchema.parse(req.body);
+      if (!resend) {
+        console.error("Resend client not initialized - missing API key");
+        return res.status(500).json({ message: "Email service not configured" });
+      });
       
       // Send email using Resend
       if (!process.env.RESEND_API_KEY) {
