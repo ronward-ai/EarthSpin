@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Share, Check, AlertCircle } from "lucide-react";
 import EarthGlobe from "@/components/EarthGlobe";
 import { calculateRotationSpeed } from "@/lib/calculations";
@@ -333,6 +332,9 @@ export default function Home() {
         {/* Earth Visualization and Speed */}
         {latitude !== null && !isLoading && (
           <div className="w-full max-w-md mb-8">
+            {/* Connector: location card → globe */}
+            <div className="w-px h-5 bg-white/15 mx-auto -mt-3 mb-0" />
+
             {/* Earth visualization */}
             <div className="mb-8 mt-2">
               <EarthGlobe latitude={latitude} longitude={longitude ?? 0} size={220} />
@@ -344,24 +346,23 @@ export default function Home() {
 
               <div className="flex items-stretch justify-center gap-3 my-4">
                 <span
-                  className="font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text"
+                  className="font-bold text-white"
                   style={{ fontSize: '3rem', lineHeight: 1 }}
                 >
                   {formatNumber(getCurrentSpeed())}
                 </span>
                 {unit === "mps" ? (
-                  <span className="flex flex-col justify-between font-bold" style={{ lineHeight: 1 }}>
+                  <span className="flex flex-col justify-between font-bold text-white" style={{ lineHeight: 1 }}>
                     {['metres', 'per', 'second'].map(w => (
                       <span
                         key={w}
-                        className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text"
                         style={{ fontSize: '1rem', lineHeight: 1 }}
                       >{w}</span>
                     ))}
                   </span>
                 ) : (
                   <span
-                    className="font-bold bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text"
+                    className="font-bold text-white"
                     style={{ fontSize: '3rem', lineHeight: 1 }}
                   >
                     {getUnitLabel()}
@@ -374,8 +375,8 @@ export default function Home() {
                   variant={unit === "kph" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
                     unit === "kph"
-                      ? "bg-[#4DA8DA]/80 text-white"
-                      : "text-white/70 hover:text-white"
+                      ? "bg-[#4DA8DA]/80 text-white border border-transparent"
+                      : "text-white/60 hover:text-white border border-white/20 bg-white/5 hover:bg-white/10"
                   }`}
                   onClick={() => setUnit("kph")}
                 >
@@ -385,8 +386,8 @@ export default function Home() {
                   variant={unit === "mph" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
                     unit === "mph"
-                      ? "bg-[#4DA8DA]/80 text-white"
-                      : "text-white/70 hover:text-white"
+                      ? "bg-[#4DA8DA]/80 text-white border border-transparent"
+                      : "text-white/60 hover:text-white border border-white/20 bg-white/5 hover:bg-white/10"
                   }`}
                   onClick={() => setUnit("mph")}
                 >
@@ -396,28 +397,23 @@ export default function Home() {
                   variant={unit === "mps" ? "default" : "ghost"}
                   className={`px-4 py-2 rounded-full ${
                     unit === "mps"
-                      ? "bg-[#4DA8DA]/80 text-white"
-                      : "text-white/70 hover:text-white"
+                      ? "bg-[#4DA8DA]/80 text-white border border-transparent"
+                      : "text-white/60 hover:text-white border border-white/20 bg-white/5 hover:bg-white/10"
                   }`}
                   onClick={() => setUnit("mps")}
                 >
                   m/s
                 </Button>
               </div>
-            </div>
-
-            {/* Share Button */}
-            <Separator className="my-6 bg-white/20" />
-
-            <div className="mt-2 mb-6 flex flex-col items-center">
-              <Button
-                onClick={handleShare}
-                className="bg-gradient-to-r from-[#4DA8DA] to-[#2A7DA8] hover:from-[#3A97C9] hover:to-[#1A6C97] px-6 py-5 text-lg h-auto border border-blue-400/30 shadow-lg shadow-blue-500/20"
-                size="lg"
-              >
-                {copied ? <Check className="h-5 w-5 mr-2" /> : <Share className="h-5 w-5 mr-2" />}
-                {copied ? "Copied!" : "Share Your Rotation Speed"}
-              </Button>
+              <div className="mt-3 mb-2">
+                <Button
+                  onClick={handleShare}
+                  className="border border-[#4DA8DA] text-[#4DA8DA] bg-transparent hover:bg-[#4DA8DA]/10 px-6"
+                >
+                  {copied ? <Check className="h-4 w-4 mr-2" /> : <Share className="h-4 w-4 mr-2" />}
+                  {copied ? "Copied!" : "Share Your Rotation Speed"}
+                </Button>
+              </div>
             </div>
           </div>
         )}

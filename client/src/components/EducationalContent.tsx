@@ -14,18 +14,18 @@ export default function EducationalContent({ speeds }: EducationalContentProps) 
       <h2 className="text-xl font-semibold mb-4 text-[#4DA8DA]">Earth's Rotation</h2>
       
       <div className="space-y-4 text-sm">
-        <p>
-          Our planet completes one full rotation on its axis every 24 hours, creating day and night. This constant 
+        <p className="text-base leading-relaxed">
+          Our planet completes one full rotation on its axis every 24 hours, creating day and night. This constant
           movement means everyone on Earth is always in motion, even when standing still.
         </p>
-        
+
         <div className="bg-[#1C3359]/30 p-4 rounded-lg">
           <p className="font-medium mb-2">Did you know?</p>
-          <ul className="list-disc list-inside space-y-2 text-blue-200 opacity-90">
-            <li>People at the equator travel the fastest at about 1,670 km/h</li>
-            <li>Someone standing at the North or South Pole barely moves at all</li>
-            <li>Earth also orbits the Sun at approximately 107,000 km/h</li>
-            <li>The entire solar system orbits the center of the Milky Way at about 828,000 km/h</li>
+          <ul className="list-disc list-inside space-y-2 text-blue-200 opacity-90 leading-relaxed">
+            <li>People at the equator travel the fastest at about <strong className="text-white">1,670 km/h</strong></li>
+            <li>Someone standing at the <strong className="text-white">North or South Pole</strong> barely moves at all</li>
+            <li>Earth also orbits the Sun at approximately <strong className="text-white">107,000 km/h</strong></li>
+            <li>The entire solar system orbits the Milky Way at about <strong className="text-white">828,000 km/h</strong></li>
           </ul>
         </div>
         
