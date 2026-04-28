@@ -346,23 +346,24 @@ export default function Home() {
 
               <div className="flex items-stretch justify-center gap-3 my-4">
                 <span
-                  className="font-bold text-white"
+                  className="font-bold bg-gradient-to-r from-[#FFE5A0] to-[#F2D399] text-transparent bg-clip-text"
                   style={{ fontSize: '3rem', lineHeight: 1 }}
                 >
                   {formatNumber(getCurrentSpeed())}
                 </span>
                 {unit === "mps" ? (
-                  <span className="flex flex-col justify-between font-bold text-white" style={{ lineHeight: 1 }}>
+                  <span className="flex flex-col justify-between font-bold" style={{ lineHeight: 1 }}>
                     {['metres', 'per', 'second'].map(w => (
                       <span
                         key={w}
+                        className="bg-gradient-to-r from-[#FFE5A0] to-[#F2D399] text-transparent bg-clip-text"
                         style={{ fontSize: '1rem', lineHeight: 1 }}
                       >{w}</span>
                     ))}
                   </span>
                 ) : (
                   <span
-                    className="font-bold text-white"
+                    className="font-bold bg-gradient-to-r from-[#FFE5A0] to-[#F2D399] text-transparent bg-clip-text"
                     style={{ fontSize: '3rem', lineHeight: 1 }}
                   >
                     {getUnitLabel()}
